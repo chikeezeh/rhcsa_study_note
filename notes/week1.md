@@ -78,3 +78,9 @@ drwx------.  4 root root    41 Mar 14 19:54 .config
 root
 
 ```
+
+#### Linux file and directory property
+|Type and permissions| # of links| owner | group| size | date | name|
+| :---               |:---: |:---: | :---:| :---:|:---:|---: |
+|drwxr-xr-x.         | 2|root|root|6|Apr 10 07:58|adirectory|
+|-rw-r--r--.|1|root|root|0|Apr 10 07:58|afile|
