@@ -162,3 +162,28 @@ drwxr-xr-x. 2 root root 6 Apr 10 08:33 dir2
 drwxr-xr-x. 2 root root 6 Apr 10 08:33 dir3
 
 ```
+#### Find files and directories
+The are two main commands that are used to find files and directory on a Linux system.
+* find
+* locate
+
+The `find` command iterates over the given path to find the file or directory, while the `locate` command uses a prebuilt database, which should be regularly updated. The `locate` command is much faster than the `find` command, however `locate` might be inaccurate if the database is not update.
+
+##### Example using locate to find files that end with .sh
+```console
+┌──[11:04:01]─[0]─[root@almanode1:~/scripts/tester]
+└──| updatedb #update the database that locate needs
+┌──[11:04:28]─[0]─[root@almanode1:~/scripts/tester]
+└──| locate */*.sh #this command locates all the .sh file on the system
+/boot/grub2/i386-pc/modinfo.sh
+/etc/X11/xinit/xinitrc.d/50-systemd-user.sh
+/etc/X11/xinit/xinitrc.d/localuser.sh
+```
+##### Example using find to find files with the name less.sh
+```console
+┌──[11:08:01]─[0]─[root@almanode1:~/scripts/tester]
+└──| find / -name less.sh
+/etc/profile.d/less.sh
+/usr/share/vim/vim82/macros/less.sh
+
+```
