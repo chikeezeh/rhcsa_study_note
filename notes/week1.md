@@ -84,3 +84,14 @@ root
 | :---               |:---: |:---: | :---:| :---:|:---:|---: |
 |drwxr-xr-x.         | 2|root|root|6|Apr 10 07:58|adirectory|
 |-rw-r--r--.|1|root|root|0|Apr 10 07:58|afile|
+
+#### Linux file types
+|File Symbol|Meaning|
+| :--- |---: |
+|-|Regular file|
+|d|Directory|
+|l|Link|
+|c|Special file of device file|
+|s|Socket|
+|p|Named pipe|
+|b|Block Device|
