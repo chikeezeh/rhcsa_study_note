@@ -187,3 +187,21 @@ The `find` command iterates over the given path to find the file or directory, w
 /usr/share/vim/vim82/macros/less.sh
 
 ```
+#### Soft and Hard Links
+This can be thought of as shortcuts pointing to a file or directory in another location. Soft links have a different inode number than the original file, while hard links has the same inode number as the original file. Hence, if the original file is deleted, the hard link will still remain, while the soft link will no longer work. Hard links can only be used for files, while soft link can be used for both file and directory.
+
+##### Creating a hard link
+```console
+┌──[11:14:55]─[0]─[root@almanode1:~/scripts/tester]
+└──| ln afile hardlink
+```
+##### Creating a soft link
+```console
+┌──[11:15:10]─[0]─[root@almanode1:~/scripts/tester]
+└──| ln -s afile softlink
+```
+#### WildCards
+
+* \* &rarr; represents zero or more characters
+* ? &rarr; represents a single character
+* [] &rarr; representa a range of characters
