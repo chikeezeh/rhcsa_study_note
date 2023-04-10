@@ -95,3 +95,70 @@ root
 |s|Socket|
 |p|Named pipe|
 |b|Block Device|
+
+#### Creating files and directories
+
+Files can be created in Linux using various different commands.
+<b>touch</b> &rarr; This command can be used to create a new file or update the timestamp of an existing file.
+```console
+┌──[08:22:56]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll
+total 0
+drwxr-xr-x. 2 root root 6 Apr 10 07:58 adirectory
+-rw-r--r--. 1 root root 0 Apr 10 07:58 afile
+┌──[08:22:57]─[0]─[root@almanode1:~/scripts/tester]
+└──| touch file1
+┌──[08:23:45]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll
+total 0
+drwxr-xr-x. 2 root root 6 Apr 10 07:58 adirectory
+-rw-r--r--. 1 root root 0 Apr 10 07:58 afile
+-rw-r--r--. 1 root root 0 Apr 10 08:23 file1
+┌──[08:23:48]─[0]─[root@almanode1:~/scripts/tester]
+└──|
+
+```
+<b>cp</b> &rarr; The copy command can also be used to create a new file, you copy an existing file and give it a new name to create a new file which can then be edited.
+```console
+┌──[08:26:10]─[0]─[root@almanode1:~/scripts/tester]
+└──| cp file1 file2
+┌──[08:26:18]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll
+total 0
+drwxr-xr-x. 2 root root 6 Apr 10 07:58 adirectory
+-rw-r--r--. 1 root root 0 Apr 10 07:58 afile
+-rw-r--r--. 1 root root 0 Apr 10 08:23 file1
+-rw-r--r--. 1 root root 0 Apr 10 08:26 file2
+
+```
+<b>vi</b> &rarr; the vi command will open an existin or non-existing file in an editor, once changes are made the file can be saved hereby creating a new file.
+```console
+┌──[08:26:30]─[0]─[root@almanode1:~/scripts/tester]
+└──| vi file3
+┌──[08:28:45]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll
+total 4
+drwxr-xr-x. 2 root root 6 Apr 10 07:58 adirectory
+-rw-r--r--. 1 root root 0 Apr 10 07:58 afile
+-rw-r--r--. 1 root root 0 Apr 10 08:23 file1
+-rw-r--r--. 1 root root 0 Apr 10 08:26 file2
+-rw-r--r--. 1 root root 6 Apr 10 08:28 file3
+
+```
+<b>mkdir</b> &rarr; this command is used to create a directory
+```console
+┌──[08:31:14]─[0]─[root@almanode1:~/scripts/tester]
+└──| mkdir dir1
+┌──[08:31:18]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll -d dir1
+drwxr-xr-x. 2 root root 6 Apr 10 08:31 dir1
+
+┌──[08:33:36]─[0]─[root@almanode1:~/scripts/tester]
+└──| mkdir dir{1..3}
+┌──[08:33:42]─[0]─[root@almanode1:~/scripts/tester]
+└──| ll -d dir*
+drwxr-xr-x. 2 root root 6 Apr 10 08:33 dir1
+drwxr-xr-x. 2 root root 6 Apr 10 08:33 dir2
+drwxr-xr-x. 2 root root 6 Apr 10 08:33 dir3
+
+```
