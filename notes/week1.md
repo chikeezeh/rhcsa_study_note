@@ -205,3 +205,61 @@ This can be thought of as shortcuts pointing to a file or directory in another l
 * \* &rarr; represents zero or more characters
 * ? &rarr; represents a single character
 * [] &rarr; representa a range of characters
+
+#### Basic Linux file permissions
+There are 3 basic permissions for every file in the Linux system.
+* r &rarr; read permission
+* w &rarr; write permission
+* x &rarr; execute permission
+See the console output blow.
+```console
+-rwxr-xr-x. 1 root root 0 Mar  5 16:26 test.sh
+
+```
+Every file has 3 set of the permissions;
+* The first 3 are the `u`ser(file owner) permissions
+* The middle are the `g`roup (group of users) permissions
+* The last 3 are the `o`thers (users outside of the primary file owner or group owner) permissions
+
+##### Using chmod command to change permissions
+The `chmod` command can be used to alter the permissions on a given file. This can either be alphabetic or numerical.
+
+```console
+Remove the executable permission from the user.
+┌──[18:41:39]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxr-xr-x. 1 root root 0 Mar  5 16:26 test.sh
+┌──[18:41:43]─[0]─[root@almanode1:~/scripts]
+└──| chmod u-x test.sh
+┌──[18:42:07]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rw-r-xr-x. 1 root root 0 Mar  5 16:26 test.sh
+```
+```console
+Add write permission to group.
+┌──[18:44:13]─[0]─[root@almanode1:~/scripts]
+└──| chmod g+w test.sh
+┌──[18:44:23]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rw-rwxr-x. 1 root root 0 Mar  5 16:26 test.sh
+
+```
+###### Using the numerical method to change permission.
+`r`ead = 4
+`w`rite = 2
+e`x`ecute = 1
+To get the number for each of `ugo`, we sum up the permissions we want to give them.
+777 = rwxrwxrwx
+700 = rwx------
+600 = rw-------
+```console
+┌──[18:49:28]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rw-rwxr-x. 1 root root 0 Mar  5 16:26 test.sh
+┌──[18:49:31]─[0]─[root@almanode1:~/scripts]
+└──| chmod 777 test.sh
+┌──[18:49:39]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxrwxrwx. 1 root root 0 Mar  5 16:26 test.sh
+
+```
