@@ -263,3 +263,36 @@ To get the number for each of `ugo`, we sum up the permissions we want to give t
 -rwxrwxrwx. 1 root root 0 Mar  5 16:26 test.sh
 
 ```
+#### File Ownership
+Every file and directory has two owners, the user and the group.
+`chown` command can be used to change the user and/or group of a file, which `chgrp` is used to change only the group owner.
+`-R` flag can be used to Recursively change the ownership.
+
+```console
+Changing the user to rick and group to wheel for file test.sh
+┌──[19:25:30]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxrwxrwx. 1 root root 0 Mar  5 16:26 test.sh
+┌──[19:25:35]─[0]─[root@almanode1:~/scripts]
+└──| chown rick:wheel test.sh
+┌──[19:25:58]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxrwxrwx. 1 rick wheel 0 Mar  5 16:26 test.sh
+```
+```console
+Changing only the group from wheel to root
+┌──[19:26:11]─[0]─[root@almanode1:~/scripts]
+└──| chgrp root test.sh
+┌──[19:27:45]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxrwxrwx. 1 rick root 0 Mar  5 16:26 test.sh
+```
+```console
+Changing the user to root
+┌──[19:28:01]─[0]─[root@almanode1:~/scripts]
+└──| chown root test.sh
+┌──[19:28:39]─[0]─[root@almanode1:~/scripts]
+└──| ll test.sh
+-rwxrwxrwx. 1 root root 0 Mar  5 16:26 test.sh
+```
+
