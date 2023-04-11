@@ -1,5 +1,22 @@
-#### Linux File System Structure and Description
+### Week one study note (4/9/2023 - 4/15/2023)<!-- omit from toc -->
+- [Linux File System Structure and Description](#linux-file-system-structure-and-description)
+- [File System Navigation commands](#file-system-navigation-commands)
+- [Linux file and directory property](#linux-file-and-directory-property)
+- [Linux file types](#linux-file-types)
+- [Creating files and directories](#creating-files-and-directories)
+- [Find files and directories](#find-files-and-directories)
+  - [Example using locate to find files that end with .sh](#example-using-locate-to-find-files-that-end-with-sh)
+  - [Example using find to find files with the name less.sh](#example-using-find-to-find-files-with-the-name-lesssh)
+- [Soft and Hard Links](#soft-and-hard-links)
+  - [Creating a hard link](#creating-a-hard-link)
+  - [Creating a soft link](#creating-a-soft-link)
+- [WildCards](#wildcards)
+- [Basic Linux file permissions](#basic-linux-file-permissions)
+  - [Using chmod command to change permissions](#using-chmod-command-to-change-permissions)
+    - [Using the numerical method to change permission.](#using-the-numerical-method-to-change-permission)
+- [File Ownership](#file-ownership)
 
+#### Linux File System Structure and Description
 
 <b>/</b> &rarr; This is the apex directory in the Linux file system, it is called root directory.
 <br/>
