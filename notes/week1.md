@@ -15,6 +15,8 @@
   - [Using chmod command to change permissions](#using-chmod-command-to-change-permissions)
     - [Using the numerical method to change permission.](#using-the-numerical-method-to-change-permission)
 - [File Ownership](#file-ownership)
+- [Access control List (ACL)](#access-control-list-acl)
+  - [ACL commands](#acl-commands)
 
 #### Linux File System Structure and Description
 
@@ -313,3 +315,65 @@ Changing the user to root
 -rwxrwxrwx. 1 root root 0 Mar  5 16:26 test.sh
 ```
 
+#### Access control List (ACL)
+Access control list is used to give fine grain permission to a user/group to disc resource. And example will be to give user `rick` access to `rw` to a file, while keeping `other` users access to the file as `r`ead only. How to know if a file has ACL, the `.` at the end of the permission bits will be replaced by a `+`.
+This can be accomplished using the `setfacl` command.
+```console
+┌──[09:27:36]─[0]─[root@almanode1:/tmp]
+└──| ll testfile
+-rw-r--r--. 1 root root 0 Apr 11 09:27 testfile
+┌──[09:27:40]─[0]─[root@almanode1:/tmp]
+└──| su rick
+┌──[09:28:06]─[0]─[rick@almanode1:/tmp]
+└──| echo "rick is trying to add text to this file" >> testfile
+bash: testfile: Permission denied
+┌──[09:28:43]─[0]─[rick@almanode1:/tmp]
+└──| su
+Password:
+┌──[09:29:46]─[0]─[root@almanode1:/tmp]
+└──| setfacl -m u:rick:rw testfile
+┌──[09:31:01]─[0]─[root@almanode1:/tmp]
+└──| su rick
+┌──[09:31:09]─[0]─[rick@almanode1:/tmp]
+└──| echo "rick is trying to add text to this file" >> testfile
+┌──[09:31:23]─[0]─[rick@almanode1:/tmp]
+└──| cat testfile
+rick is trying to add text to this file
+┌──[09:31:30]─[0]─[rick@almanode1:/tmp]
+└──| ll testfile
+-rw-rw-r--+ 1 root root 40 Apr 11 09:31 testfile
+```
+From above, rick can write to the file even though he is not the file owner,
+or in the group root. Also, the `+` sign at the end of the permission bits indicates that ACL is turned on for that file.
+##### ACL commands
+* `setfacl` &rarr; Used to modify ACL.
+  ```console
+    # setfacl
+    # Set file access control lists (ACL).
+    # More information: <https://manned.org/setfacl>.
+
+    # Modify ACL of a file for user with read and write access:
+    setfacl -m u:username:rw file
+
+    # Modify default ACL of a file for all users:
+    setfacl -d -m u::rw file
+
+    # Remove ACL of a file for a user:
+    setfacl -x u:username file
+
+    # Remove all ACL entries of a file:
+    setfacl -b file
+    source:cheat.sh/setfacl
+  ```
+* `getfacl` &rarr; Get file access control lists
+    ```console
+        ┌──[09:49:22]─[0]─[rick@almanode1:/tmp]
+        └──| getfacl -t testfile
+        # file: testfile
+        USER   root      rw-
+        user   rick      rw-
+        GROUP  root      r--
+        mask             rw-
+        other            r--
+
+    ```
