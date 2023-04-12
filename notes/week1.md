@@ -17,6 +17,7 @@
 - [File Ownership](#file-ownership)
 - [Access control List (ACL)](#access-control-list-acl)
   - [ACL commands](#acl-commands)
+- [Adding Text to Files (Redirects)](#adding-text-to-files-redirects)
 
 #### Linux File System Structure and Description
 
@@ -377,3 +378,9 @@ or in the group root. Also, the `+` sign at the end of the permission bits indic
         other            r--
 
     ```
+#### Adding Text to Files (Redirects)
+There are 3 simple ways to add text to a file.
+1. Using an editor such as `vi`,`nano`,`vim`...etc
+2. Redirecting the output of a command into a file `>` will replace the content in the file, while `>>` will append the ouput to the end of the file.
+3. Use the `echo` command and redirecting into a file.
+
