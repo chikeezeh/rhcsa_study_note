@@ -18,6 +18,7 @@
 - [Access control List (ACL)](#access-control-list-acl)
   - [ACL commands](#acl-commands)
 - [Adding Text to Files (Redirects)](#adding-text-to-files-redirects)
+- [Input and Output Redirects](#input-and-output-redirects)
 
 #### Linux File System Structure and Description
 
@@ -384,3 +385,27 @@ There are 3 simple ways to add text to a file.
 2. Redirecting the output of a command into a file `>` will replace the content in the file, while `>>` will append the ouput to the end of the file.
 3. Use the `echo` command and redirecting into a file.
 
+#### Input and Output Redirects
+Linux has 3 redirects;
+1. stdin &rarr; standard input, with file descriptor number as 0
+2. stdout &rarr; standard output, with file descriptor number as 1
+3. stderr &rarr; standard error, with file descriptor number as 2
+
+`stdout` is the output we see on the terminal when we run commands that produce outputs, this can be redirected to a file using either `>` or `>>`.
+`stdin` is the input that can be sent to a command or a file, this also includes keyboard inputs.
+`stderr` occurs when a command produces an error. This can also be redirected to a file like `stdout`.
+
+`tee` command can be used to both view `stdout` in the terminal and redirected to a file.
+```console
+┌──[21:14:58]─[0]─[root@almanode1:~]
+└──| echo 'example' | tee testfile
+example
+┌──[21:15:19]─[0]─[root@almanode1:~]
+└──| echo 'example' | tee -a testfile #append
+example
+┌──[21:15:29]─[0]─[root@almanode1:~]
+└──| cat testfile
+example
+example
+
+```
