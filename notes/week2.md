@@ -35,6 +35,33 @@ Pipe is used to redirect the output of one command as the input of another comma
 >
 >In summary, static IP addressing involves manually assigning a specific IP address to each device, while DHCP automatically assigns IP addresses to devices as they connect to the network. The choice between static and DHCP addressing depends on the specific needs of the network and the devices on it.
 
-
-
-
+#### Network Files and Commands
+##### Interface configuration files
+* `/etc/nsswitch.conf` &rarr; his file controls the order in which the system searches for information such as hostnames, IP addresses, and user information. It specifies which sources to query for this information, such as DNS or the local`/etc/hosts` file.
+* `/etc/hosts` &rarr; Defines local system IP address and hostname.
+* `/etc/NetworkManager/system-connections/` &rarr; on newer RHEL distributions the interface configurations have been moved to keyfiles.
+>```console
+>┌──[05:38:27]─[0]─[root@almanode1:/etc/NetworkManager/system-connections]
+>└──| cat ens33.nmconnection
+>[connection]
+>id=ens33
+>uuid=3e7f4ce2-536f-38e2-973a-70416b59337b
+>type=ethernet
+>autoconnect-priority=-999
+>interface-name=ens33
+>timestamp=1679450545
+>
+>[ethernet]
+>
+>[ipv4]
+>address1=192.168.18.130/24,192.168.18.2
+>dns=8.8.8.8;
+>method=manual
+>
+>[ipv6]
+>addr-gen-mode=eui64
+>method=auto
+>
+>[proxy]
+>```
+* `/etc/resolv.conf` &rarr; specifies dns server, resolves hostname to IP and IP to hostname.
