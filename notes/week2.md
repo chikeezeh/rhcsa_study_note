@@ -65,3 +65,18 @@ Pipe is used to redirect the output of one command as the input of another comma
 >[proxy]
 >```
 * `/etc/resolv.conf` &rarr; specifies dns server, resolves hostname to IP and IP to hostname.
+
+#### Network Commands
+
+* `ping` - This command is used to test network connectivity by sending ICMP echo request packets to a target host and receiving ICMP echo reply packets in response. It is often used to check if a host is reachable and to measure round-trip latency.
+
+* `traceroute` - This command is used to trace the path that packets take from a source host to a destination host by sending ICMP packets with increasing TTL (Time-to-Live) values and recording the IP addresses of the routers along the way.
+
+* `netstat` - This command is used to display various network-related information, such as active network connections, listening ports, and routing tables.
+
+* `ifconfig/ip` - These commands are used to configure and display information about network interfaces on the system, such as IP addresses, netmasks, and network packets statistics.
+
+* `nslookup/dig` - These commands are used to perform DNS lookups and query DNS servers for information about domain names, such as IP addresses and MX records.
+
+* `tcpdump` works by capturing network packets that are either entering or leaving a network interface on the system. It can capture packets based on a variety of filters, such as source or destination IP address, protocol type, port number, and more.
+
