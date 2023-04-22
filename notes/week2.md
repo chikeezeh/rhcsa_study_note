@@ -102,3 +102,45 @@ ethtool --identify eth0 10
 ethtool -s eth0 speed 10|100|1000 duplex half|full autoneg on|off
 source:cheat.sh
 ```
+#### NIC Bonding
+NIC bonding or Network bonding, is the combination of multiple NIC into a single bond interface.
+
+##### Steps to create NIC bonding.
+1. Use the following command to create a bond configuration file for the bond interface:
+```console
+sudo vi /etc/sysconfig/network-scripts/ifcfg-bond0
+
+```
+2. In the configuration file, set the following parameters:
+```console
+DEVICE=bond0
+ONBOOT=yes
+BOOTPROTO=none
+IPADDR=<ip_address>
+NETMASK=<subnet_mask>
+GATEWAY=<gateway_address>
+DNS1=<dns_server_1>
+DNS2=<dns_server_2>
+BONDING_OPTS="mode=<bonding_mode> miimon=<monitor_interval> xmit_hash_policy=<hashing_policy>"
+
+```
+Replace <ip_address> with the desired IP address, <subnet_mask> with the subnet mask for your network, <gateway_address> with the IP address of your default gateway, <dns_server_1> with the IP address of your primary DNS server, <dns_server_2> with the IP address of your secondary DNS server, <bonding_mode> with the desired bonding mode (e.g. active-backup, balance-rr, etc.), <monitor_interval> with the interval at which the bond driver sends a packet to verify link status, and <hashing_policy> with the desired packet distribution method.
+3. Save and close the configuration file.
+4. Use the following command to create configuration files for each network interface that will be included in the bond:
+```console
+sudo vi /etc/sysconfig/network-scripts/ifcfg-<interface_name>
+```
+Replace <interface_name> with the name of the interface, such as "eth0" or "enp0s3".
+5. In each interface configuration file, set the following parameters:
+```console
+DEVICE=<interface_name>
+ONBOOT=yes
+BOOTPROTO=none
+MASTER=bond0
+SLAVE=yes
+```
+Replace <interface_name> with the name of the interface.
+6. Save and close the configuration file.
+7. Use the following command to restart the network service: `sudo systemctl restart network
+`
+8. `ip addr show` to verify ythat the bonding interface is up and running.
