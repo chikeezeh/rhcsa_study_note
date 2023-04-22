@@ -80,3 +80,25 @@ Pipe is used to redirect the output of one command as the input of another comma
 
 * `tcpdump` works by capturing network packets that are either entering or leaving a network interface on the system. It can capture packets based on a variety of filters, such as source or destination IP address, protocol type, port number, and more.
 
+#### Network Interface Card (NIC)
+To get the information about your NIC, you run `ethtool interface_name`
+```console
+# Display the current settings for an interface:
+ethtool eth0
+
+# Display the driver information for an interface:
+ethtool --driver eth0
+
+# Display all supported features for an interface:
+ethtool --show-features eth0
+
+# Display the network usage statistics for an interface:
+ethtool --statistics eth0
+
+# Blink one or more LEDs on an interface for 10 seconds:
+ethtool --identify eth0 10
+
+# Set the link speed, duplex mode, and parameter auto-negotiation for a given interface:
+ethtool -s eth0 speed 10|100|1000 duplex half|full autoneg on|off
+source:cheat.sh
+```
