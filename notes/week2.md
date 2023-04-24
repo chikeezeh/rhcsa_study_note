@@ -1,4 +1,12 @@
 ### Week two study note (4/16/2023 - 4/22/2023)<!-- omit from toc -->
+- [Networking](#networking)
+  - [Network Components](#network-components)
+  - [Network Files and Commands](#network-files-and-commands)
+    - [Interface configuration files](#interface-configuration-files)
+  - [Network Commands](#network-commands)
+  - [Network Interface Card (NIC)](#network-interface-card-nic)
+  - [NIC Bonding](#nic-bonding)
+    - [Steps to create NIC bonding.](#steps-to-create-nic-bonding)
 
 #### Pipe |
 Pipe is used to redirect the output of one command as the input of another command. In the example below, we cat the file and count the number of lines.
