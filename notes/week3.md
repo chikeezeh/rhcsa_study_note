@@ -8,3 +8,6 @@ NetworkManager offers management through different tools.
 * nmtui
 * nmcli
 
+###### `nmtui`
+Typing in the `nmtui` command gives you a menu interface that you can move around using the arrow keys to make selection as shown below.
+![nmtui interface](../images/nmtui.jpg)
