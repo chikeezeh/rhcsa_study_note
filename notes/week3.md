@@ -37,4 +37,5 @@ Setting a static IP address.
 └──| nmcli connection up ens33
 
 ```
-
+#### Downloading Files or apps
+We can use the `wget` command to download files from a server using the url.
