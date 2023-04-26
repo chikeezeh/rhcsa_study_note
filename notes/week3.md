@@ -40,7 +40,7 @@ Setting a static IP address.
 #### Downloading Files or apps
 We can use the `wget` command to download files from a server using the url.
 
-#### USing the curl command
+#### Using the curl command
 ``` console
 # curl
 # Transfers data from or to a server.
@@ -72,5 +72,6 @@ curl --user myusername:mypassword http://example.com
 curl --cert client.pem --key key.pem --insecure https://example.com
 
 ```
-
+#### File Transfer Protocol (FTP)
+FTP is a standard network protocol used for the transfer of computer files between a client and a server on a computer network, it uses the client-server model architecture using separate control and data connections between client and the server.
 
