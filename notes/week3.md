@@ -75,5 +75,10 @@ curl --cert client.pem --key key.pem --insecure https://example.com
 #### File Transfer Protocol (FTP)
 FTP is a standard network protocol used for the transfer of computer files between a client and a server on a computer network, it uses the client-server model architecture using separate control and data connections between client and the server. Default port = 21.
 
+#### Secure Copy Protocol
+s a network protocol used to securely copy files/folders between Linux (Unix) systems on a network. To transmit, use the scp command line utility, a safer variant of the cp (copy) command.
 
-
+SCP protects your data while copying across an SSH (Secure Shell) connection by encrypting the files and the passwords. Therefore, even if the traffic is intercepted, the information is still encrypted. See syntax below for how to use `scp`
+```console
+scp path/to/local_file remote_username@remote_host:path/to/remote_directory
+```
