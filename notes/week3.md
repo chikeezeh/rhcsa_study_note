@@ -119,3 +119,34 @@ source: cheat.sh/rsync
 #### Installing a package
 ```yum``` command is used to install packages and it's dependencies from a repository(repo) which could be on the public internet or a dedicated repo server.
 ```rpm``` command is used to install locally a downloaded package file.
+
+#### Creating a local repository
+1. Create a directory to store the repository files. For example, you can create a directory named "myrepo" in the /opt directory:
+```console
+sudo mkdir /opt/myrepo
+
+```
+2. Create a new repository configuration file named "myrepo.repo" using your preferred text editor:
+```console
+sudo nano /etc/yum.repos.d/myrepo.repo
+```
+3. In the configuration file, add the following lines:
+```console
+[myrepo]
+name=My Local Repository
+baseurl=file:///opt/myrepo
+enabled=1
+gpgcheck=0
+
+"myrepo" is the name of the repository.
+"My Local Repository" is the display name of the repository.
+"baseurl" specifies the location of the repository files. Since we created the repository in /opt/myrepo, we use "file:///opt/myrepo" as the baseurl.
+"enabled" specifies whether the repository is enabled. Set it to 1 to enable the repository.
+"gpgcheck" specifies whether packages should be checked for their GPG signature. Since this is a local repository, we set it to 0 to disable the check.
+```
+4. Copy the RPM packages you want to add to the repository to the /opt/myrepo directory.
+5. Run the following command to create the repository metadata:
+``` console
+sudo createrepo /opt/myrepo
+
+```
