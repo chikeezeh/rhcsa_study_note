@@ -116,3 +116,6 @@ rsync -e ssh --delete remote_host:path/to/remote_file path/to/local_file
 rsync -e 'ssh -p port' --info=progress2 remote_host:path/to/remote_file path/to/local_file
 source: cheat.sh/rsync
 ```
+#### Installing a package
+```yum``` command is used to install packages and it's dependencies from a repository(repo) which could be on the public internet or a dedicated repo server.
+```rpm``` command is used to install locally a downloaded package file.
