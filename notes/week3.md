@@ -150,3 +150,31 @@ gpgcheck=0
 sudo createrepo /opt/myrepo
 
 ```
+#### Rollback Updates and Patches
+When using a VM to run your Linux system, take a snapshot before making updates so you can roll back when needed.
+When using physical machine and you need to rollback a package:
+* yum install <pachage-name\>
+* yum history undo <id\>
+```console
+┌──[05:25:15]─[0]─[root@almanode1:~]
+└──| yum history
+ID     | Command line              | Date and time    | Action(s)      | Altered
+--------------------------------------------------------------------------------
+    31 | install screen -y         | 2023-04-28 05:25 | Install        |    1
+┌──[05:26:06]─[0]─[root@almanode1:~]
+└──| yum history undo 31
+Last metadata expiration check: 23:08:56 ago on Thu 27 Apr 2023 06:17:54.
+Dependencies resolved.
+==================================================================================================================================================
+ Package                          Architecture                     Version                                  Repository                       Size
+==================================================================================================================================================
+Removing:
+ screen                           x86_64                           4.8.0-6.el9                              @epel                           957 k
+
+Transaction Summary
+==================================================================================================================================================
+Remove  1 Package
+
+Freed space: 957 k
+Is this ok [y/N]:
+```
