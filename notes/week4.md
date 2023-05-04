@@ -2,3 +2,4 @@
 #### Installing Wordpress using the LAMP stack.
 >LAMP Stack stands for `L`inux `A`pache `M`ysql `P`HP.
 ##### Linux installation
+For this project we will be using Almalinux 9 running on a vmware workstation.
