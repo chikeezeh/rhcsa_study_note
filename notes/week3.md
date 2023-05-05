@@ -1,4 +1,16 @@
 ### Week three study note (4/23/2023 - 4/29/2023)<!-- omit from toc -->
+- [Network Utilities](#network-utilities)
+  - [NetworkManager](#networkmanager)
+    - [nmtui](#nmtui)
+    - [nmcli](#nmcli)
+- [Downloading Files or apps](#downloading-files-or-apps)
+- [Using the curl command](#using-the-curl-command)
+- [File Transfer Protocol (FTP)](#file-transfer-protocol-ftp)
+- [Secure Copy Protocol](#secure-copy-protocol)
+- [Remote synchronization (rsync)](#remote-synchronization-rsync)
+- [Installing a package](#installing-a-package)
+- [Creating a local repository](#creating-a-local-repository)
+- [Rollback Updates and Patches](#rollback-updates-and-patches)
 
 #### Network Utilities
 ##### NetworkManager
