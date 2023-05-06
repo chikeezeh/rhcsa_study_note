@@ -5,7 +5,7 @@
 For this project we will be using Almalinux 9 running on a vmware workstation.
 
 ##### Apache Installation
-* First step is to install the Apache package using the command below.
+* First step is to install the Apache package using the command:
     `sudo dnf install httpd`
 * After that, we want to start the Apache service.
     `sudo systemctl start httpd`
