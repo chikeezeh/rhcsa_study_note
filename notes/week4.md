@@ -14,3 +14,27 @@ Then we need to enable the Apache service at system reboot.
 Next step is to allow Apache firewall access.
 `sudo firewall-cmd --permanent --add-service={http,https}`
 `sudo firewall-cmd --reload`
+
+##### Mysql Installation
+Install Mysql
+`sudo dnf install mysql mysql-server -y`
+Start the mysqld service
+`sudo systemctl start mysqld`
+Enable the mysqld service
+`sudo systemctl start mysqld`
+Configure mysqld through firewall
+`sudo firewall-cmd --permanent --add-service=mysql --zone=public`
+`sudo firewall-cmd --reload`
+Do the initial setup for mysql and setup mysql root user password.
+`sudo mysql_secure_installation`
+Create a database and database user that wordpress will use.
+`mysql -u root -p` to log into the mysql interface.
+```mysql
+CREATE DATABASE shod_db;
+CREATE USER 'shopuse'@'localhost' IDENTIFIED BY 'passwordgoeshere';
+GRANT ALL ON shop_db.* TO 'shopuser'@'localhost';
+FLUSH PRIVILEGES;
+EXIT
+```
+
+
