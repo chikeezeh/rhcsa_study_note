@@ -30,11 +30,23 @@ For this project we will be using Almalinux 9 running on a vmware workstation.
 * Create a database and database user that wordpress will use.
     `mysql -u root -p` to log into the mysql interface.
     ```mysql
-    CREATE DATABASE shod_db;
-    CREATE USER 'shopuse'@'localhost' IDENTIFIED BY 'passwordgoeshere';
+    CREATE DATABASE shop_db;
+    CREATE USER 'shopuser'@'localhost' IDENTIFIED BY 'passwordgoeshere';
     GRANT ALL ON shop_db.* TO 'shopuser'@'localhost';
     FLUSH PRIVILEGES;
     EXIT
     ```
+
+##### PHP Installation
+1. First we need to install PHP and all the dependencies it needs.
+   `sudo dnf install php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip`
+2. Download the latest Wordpress.
+   `sudo wget https://wordpress.org/latest.zip`
+3. Unzip the file into the right directory.
+   `sudo unzip latest.zip -d /var/www/html/`
+4. Change the ownership and permission of the website directory
+   `sudo chown -R apache:apache /var/www/html/wordpress/`
+   `sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R`
+5. Move the contents of `/var/www/html/wordpress` to the parent directory `html`
 
 
