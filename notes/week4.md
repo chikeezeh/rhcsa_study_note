@@ -1,4 +1,11 @@
 ### Week four study note (4/30/2023 - 5/06/2023)<!-- omit from toc -->
+- [Installing Wordpress using the LAMP stack.](#installing-wordpress-using-the-lamp-stack)
+  - [Linux installation](#linux-installation)
+  - [Apache Installation](#apache-installation)
+  - [Mysql Installation](#mysql-installation)
+  - [PHP Installation](#php-installation)
+  - [Wordpress installation.](#wordpress-installation)
+
 #### Installing Wordpress using the LAMP stack.
 >LAMP Stack stands for `L`inux `A`pache `M`ysql `P`HP.
 ##### Linux installation
