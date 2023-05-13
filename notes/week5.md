@@ -9,4 +9,5 @@ Hostname to Hostname &rarr; (CNAME Record)
 * Files
     `/etc/named.conf` &rarr; main configuration file for DNS
     `/var/named` &rarr; a directory that contains all the zone files and server definition.
-    
+* Services
+  The main service for using a Linux Machine as a DNS server is `named`.
