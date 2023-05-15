@@ -1,4 +1,6 @@
 ### Week five study note (5/07/2023 - 5/13/2023)<!-- omit from toc -->
+- [DNS = Domain Name System](#dns--domain-name-system)
+  - [Configuring a DNS server on a Linux Machine.](#configuring-a-dns-server-on-a-linux-machine)
 
 #### DNS = Domain Name System
 * Purpose of DNS
@@ -127,4 +129,4 @@ This can be accomplished using nmtui.
 
 * Testing the DNS server.
   Use the `nslookup` or `dig` command to test if the client and/or server IPs are resolved to their FQDN.
-  
+
