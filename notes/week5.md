@@ -124,3 +124,7 @@ Remember to restart the network after making the edit.
 
 * Add the DNS server IP to the client machine
 This can be accomplished using nmtui.
+
+* Testing the DNS server.
+  Use the `nslookup` or `dig` command to test if the client and/or server IPs are resolved to their FQDN.
+  
