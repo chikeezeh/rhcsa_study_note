@@ -38,3 +38,8 @@ timedatectl set-ntp on
 timedatectl set-local-rtc 1
 
 ```
+#### Central Logger (RSYSLOG)
+This generates logs from other servers.
+Service or package name &rarr; `rsyslog`
+Config file &rarr; `/etc/ryslog.conf`
+Service &rarr; `systemctl start rsyslog`
