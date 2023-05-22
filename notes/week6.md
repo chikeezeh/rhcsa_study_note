@@ -43,3 +43,16 @@ This generates logs from other servers.
 Service or package name &rarr; `rsyslog`
 Config file &rarr; `/etc/ryslog.conf`
 Service &rarr; `systemctl start rsyslog`
+
+#### Linux OS Hardening.
+1. User Account management
+   1. Create less obvious username
+   2. Set password expiry policies, the `chage` can be used for this.
+2. Remove un-wanted packages
+3. Stop un-used services
+4. check on listening ports
+5. secure SSH Configuration
+6. Enable Firewall
+7. Enable SELinux
+8. Change Listening Services Port Numbers
+9.  Keep your OS up to date.
