@@ -1,4 +1,6 @@
 ### Week seven study note (5/21/2023 - 5/26/2023)<!-- omit from toc -->
+- [Reseting root password on RHEL9](#reseting-root-password-on-rhel9)
+
 #### Reseting root password on RHEL9
 This can be achieved on the system console.
 1. Reboot the system
