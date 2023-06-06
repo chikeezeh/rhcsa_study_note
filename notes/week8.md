@@ -1,4 +1,7 @@
 ### Week eight study note (5/28/2023 - 6/03/2023)<!-- omit from toc -->
+- [Linux OS hardening continued.](#linux-os-hardening-continued)
+  - [Secure SSH Configuration](#secure-ssh-configuration)
+- [OpenLDAP Installation](#openldap-installation)
 
 #### Linux OS hardening continued.
 ##### Secure SSH Configuration
