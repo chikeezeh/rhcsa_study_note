@@ -37,3 +37,14 @@ traceroute to google.com (172.217.14.110), 30 hops max, 60 byte packets
 30  * * *
 
 ```
+#### Configure and Secure SSH
+`ssh` &rarr; secure shell, a shell provides an interface to the Linux system. It takes the commands we type in and translate them to kernel to manage hardware.
+Package for ssh &rarr; Open SSH
+Service daemon &rarr; sshd
+Default port &rarr; 22
+
+##### Securing SSH
+Week 8 has some tips on securing ssh by editing the `/etc/ssh/sshd_config` file. In addition, the following should be done also:
+1. Set time out interval: `ClientAliveInterval 600` and `ClientAliveCountMax 0` this sets the time out to 600 secs.
+2. Disable empty passwords, users with empty passwords can't log into the system via ssh. `PermitEmptyPasswords no`
+3. Limit ssh access to specific users. `AllowUsers user1 user2`
