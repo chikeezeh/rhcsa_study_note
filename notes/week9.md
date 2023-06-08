@@ -48,3 +48,10 @@ Week 8 has some tips on securing ssh by editing the `/etc/ssh/sshd_config` file.
 1. Set time out interval: `ClientAliveInterval 600` and `ClientAliveCountMax 0` this sets the time out to 600 secs.
 2. Disable empty passwords, users with empty passwords can't log into the system via ssh. `PermitEmptyPasswords no`
 3. Limit ssh access to specific users. `AllowUsers user1 user2`
+
+##### Passwordless ssh login
+This is used when there is frequent login via ssh to a remote machine, also it is useful when performing automation from one server to another. The steps to create passwordless ssh login is as follows.
+1. Generate a private/public key pair on the local machine. `ssh-keygen`
+2. Copy the public key to the remote server. `ssh-copy-id user@ip_of_server`, this will ask you the password of the user on the remote server to verify that you have access to the machine.
+3. Login from the local machine to the remote server using `ssh user@ip_of_server`, you should be logged into the remote server without being prompted for a password.
+
