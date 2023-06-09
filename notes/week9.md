@@ -61,3 +61,7 @@ A firewall is used to test the packet information of a data as it moves in and o
 1. Software firewall &rarr; runs on the operating system,
 2. Hardware firewall &rarr; dedicated appliance with a firewall software.
 
+##### Tools for managing firewall
+1. iptables &rarr; used on older Linux versions
+2. firewalld &rarr; New version of Linux
+
