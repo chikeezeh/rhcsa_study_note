@@ -55,3 +55,6 @@ This is used when there is frequent login via ssh to a remote machine, also it i
 2. Copy the public key to the remote server. `ssh-copy-id user@ip_of_server`, this will ask you the password of the user on the remote server to verify that you have access to the machine.
 3. Login from the local machine to the remote server using `ssh user@ip_of_server`, you should be logged into the remote server without being prompted for a password.
 
+#### Firewall
+
+A firewall is used to test the packet information of a data as it moves in and out of a server using the firewall rules. The rules will either allow or deny the movement of the data.
