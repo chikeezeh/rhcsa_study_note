@@ -58,3 +58,6 @@ This is used when there is frequent login via ssh to a remote machine, also it i
 #### Firewall
 
 A firewall is used to test the packet information of a data as it moves in and out of a server using the firewall rules. The rules will either allow or deny the movement of the data.
+1. Software firewall &rarr; runs on the operating system,
+2. Hardware firewall &rarr; dedicated appliance with a firewall software.
+
