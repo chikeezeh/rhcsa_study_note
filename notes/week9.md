@@ -1,4 +1,10 @@
 ### Week nine study note (6/04/2023 - 6/10/2023)<!-- omit from toc -->
+- [Tracing Network Traffic](#tracing-network-traffic)
+- [Configure and Secure SSH](#configure-and-secure-ssh)
+  - [Securing SSH](#securing-ssh)
+  - [Passwordless ssh login](#passwordless-ssh-login)
+- [Firewall](#firewall)
+  - [Tools for managing firewall](#tools-for-managing-firewall)
 
 #### Tracing Network Traffic
 The `traceroute` is used to map the journey that a packet of data takes from its origin to its destination, `traceroute` is used when troubleshooting network issues, it can be used to determine where a packet is dropping in the network, this can help to tell us if a node is down in the network.
