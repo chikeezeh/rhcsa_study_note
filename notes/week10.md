@@ -12,4 +12,4 @@
 * Reload firewall after changing configuration &rarr `firewall-cmd --reload`
 
 * Reject traffic from an incoming address (rich rule) &rarr; `firewall-cmd --add-rich-rule='rule family="ipv4" source address="x.x.x.x" reject'`
-* 
+* Prevent your machine from being pinged &rarr; `firewall-cmd --add-icmp-block-inversion`
