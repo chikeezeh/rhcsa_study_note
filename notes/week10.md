@@ -10,4 +10,6 @@
 * Add a port to a specified zone &rarr; `firewall-cmd --permanent --zone=public --add-port=252/tcp`
 * Remove a service &rarr; `firewall-cmd --remove-service=name_of_service --permanent`
 * Reload firewall after changing configuration &rarr `firewall-cmd --reload`
-  
+
+* Reject traffic from an incoming address (rich rule) &rarr; `firewall-cmd --add-rich-rule='rule family="ipv4" source address="x.x.x.x" reject'`
+* 
