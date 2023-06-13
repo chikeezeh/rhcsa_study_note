@@ -30,4 +30,11 @@
 * `virtual-guest` Tunes the system for maximum performance if it runs on a virtual machine.
 * `virtual-host` Tunes the system for maximum performance if it acts as a host for virtual machines.
 
+##### tuned commands
+* `tuned-adm` &rarr; change setting for tuned daemon.
+* `tuned-adm active` &rarr; check active profile.
+* `tuned-adm profile profile-name` &rarr; change to a desired profile.
+* `tuned-adm recommend` &rarr; tuned recommendation.
+* `tuned-adm off` &rarr; turn off tuned setting daemon.
+* 
 
