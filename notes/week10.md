@@ -13,3 +13,7 @@
 
 * Reject traffic from an incoming address (rich rule) &rarr; `firewall-cmd --add-rich-rule='rule family="ipv4" source address="x.x.x.x" reject'`
 * Prevent your machine from being pinged &rarr; `firewall-cmd --add-icmp-block-inversion`
+
+#### Tune System Performance
+`Tuned` is as `systemd` service that is used to optimize Linux system performance. It comes with predefined profiles and settings.
+
