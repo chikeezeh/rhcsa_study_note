@@ -36,5 +36,9 @@
 * `tuned-adm profile profile-name` &rarr; change to a desired profile.
 * `tuned-adm recommend` &rarr; tuned recommendation.
 * `tuned-adm off` &rarr; turn off tuned setting daemon.
-* 
+
+##### nice and renice
+Another way of keeping your system fine-tuned is by prioritizing processes through `nice` and `renice` command.
+
+With `nice` and `renice` commands we can make the system to give preference to certain processes than others, this priority can be set at 40 different levels (-20 highest priority to 19 lowest priority)
 
