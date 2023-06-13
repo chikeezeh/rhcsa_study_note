@@ -42,3 +42,19 @@ Another way of keeping your system fine-tuned is by prioritizing processes throu
 
 With `nice` and `renice` commands we can make the system to give preference to certain processes than others, this priority can be set at 40 different levels (-20 highest priority to 19 lowest priority)
 
+###### nice and renice usage
+
+```console
+# Launch a program with altered priority:
+nice -n niceness_value command
+```
+```console
+# Change priority of a running process:
+renice -n niceness_value -p pid
+
+# Change priority of all processes owned by a user:
+renice -n niceness_value -u user
+
+# Change priority of all processes that belong to a process group:
+renice -n niceness_value --pgrp process_group
+```
