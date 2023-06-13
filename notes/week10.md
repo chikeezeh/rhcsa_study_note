@@ -17,3 +17,17 @@
 #### Tune System Performance
 `Tuned` is as `systemd` service that is used to optimize Linux system performance. It comes with predefined profiles and settings.
 
+##### tuned profiles
+`tuned-adm list #gives you a list of available profiles`
+* `balanced` &rarr; deal for systems that require a compromise between power saving and performance.
+* `desktop` &rarr; Derived from the balanced profile. Provides faster response of interactive applications.
+* `Throughput-performance` &rarr; Tunes the system for maximum throughput
+* `Latency-performance` &rarr; Ideal for server systems that require low latency at the expense of power consumption
+* `network-latency` &rarr; Derived from the latency-performance profile. It enables additional network tuning parameters to provide low network latency
+* `Network-throughput` &rarr; Derived from the throughput-performance profile. Additional network tuning parameters are applied for maximum network throughput
+* `powersave` &rarr; Tunes the system for maximum power saving
+* `oracle` &rarr; Optimized for Oracle database loads based on the throughput-performance profile.
+* `virtual-guest` Tunes the system for maximum performance if it runs on a virtual machine.
+* `virtual-host` Tunes the system for maximum performance if it acts as a host for virtual machines.
+
+
