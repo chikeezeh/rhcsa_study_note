@@ -58,3 +58,5 @@ renice -n niceness_value -u user
 # Change priority of all processes that belong to a process group:
 renice -n niceness_value --pgrp process_group
 ```
+#### Containers in Linux
+Containers are used to package the resources (software code, libraries, and configuration files) that an application needs so that it can be run across multiple machines regardless of the architecture.
