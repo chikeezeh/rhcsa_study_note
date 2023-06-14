@@ -65,3 +65,11 @@ Containers are used to package the resources (software code, libraries, and conf
 1. `Docker` is a populare container technology that was developed by Solomon Hykes in 2013, it can be used to create and manager containers.
 2. `Podman` is an alternative to `Docker` that was created by RedHat in 2018, it is daemon less, open source, Linux-native designed to develop, manage, and run containers.
 
+##### RedHat container technology
+* `podman` &rarr; for directly managing pods and container images (run, stop, start, ps, attach, etc.) 
+* `buildah` &rarr; for building, pushing, and signing container images.
+* `skopeo` &rarr; for copying, inspecting, deleting, and signing images.
+* `runc` &rarr; for providing container run and build features to `podman` and `buildah`.
+* `crun` &rarr; an optional runtime that can be configured and gives greater flexibility, control, and security for rootless containers.
+
+
