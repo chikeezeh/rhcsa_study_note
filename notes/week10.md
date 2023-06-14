@@ -60,3 +60,8 @@ renice -n niceness_value --pgrp process_group
 ```
 #### Containers in Linux
 Containers are used to package the resources (software code, libraries, and configuration files) that an application needs so that it can be run across multiple machines regardless of the architecture.
+
+##### Types of containers
+1. `Docker` is a populare container technology that was developed by Solomon Hykes in 2013, it can be used to create and manager containers.
+2. `Podman` is an alternative to `Docker` that was created by RedHat in 2018, it is daemon less, open source, Linux-native designed to develop, manage, and run containers.
+
