@@ -122,6 +122,7 @@ podman logs --follow container_name container_id
 # source: cheat.sh/podman
 ```
 #### Kickstart (Automate Linux Installation)
+Kickstart is a method to automate the Linux installation without the need for any intervention from the user. This can be used to select the system configuration, drive partitions, packages to be installed etc.
 
 ##### Steps for Kickstart
 1. Choose a Kickstart server and create/edit a Kickstart file
