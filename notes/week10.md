@@ -152,4 +152,14 @@ supported in the standard Linux kernel (i.e., core of the operating system). The
 
 To access the different run levels, you can use the command `init <run_level_integer>` for example; `init 6` will reboot the system.
 
+#### Computer Boot Process
 
+In general, the computer boot process is similar across all modern machines. This process is called `bootstrap` in IT terminology.
+
+1. Power on the machine via the power button.
+2. The CPU is started, and pulls information from the BIOS (Basic Input/Uutput System). The BIOS is a small chip installed by the manufacturer which has information needed to boot in the system in a ROM (Read Only Memory).
+3. The BIOS also, looks for extra information such as the BIOS settings, system time, date, and hardware settings from another chip called CMOS (Complimentary metal-oxide semiconductor). The CMOS chip is powered by a battery, so it retains the information needed even after the system has been powered off.
+4. The BIOS sends a POST (Power on self test) to every device connected to the system, if there is any faulty device the system won't power on.
+5. The BIOS then goes to the storage to find the MBR (Master boot record)
+6. The operating system gets loaded in the RAM (Random Access Memory)
+7. The operating system then takes over and loads the programs it needs which are then processed in the CPU.
