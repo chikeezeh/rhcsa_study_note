@@ -121,5 +121,13 @@ podman rm container_name
 podman logs --follow container_name container_id
 # source: cheat.sh/podman
 ```
+#### Kickstart (Automate Linux Installation)
 
+##### Steps for Kickstart
+1. Choose a Kickstart server and create/edit a Kickstart file
+2. Make the Kickstart file available on a network location
+3. Make the installation source available
+4. Make boot media available for client which will be used to begin the installation
+5. Start the Kickstart installation
+   
 
