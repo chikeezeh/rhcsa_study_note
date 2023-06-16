@@ -132,3 +132,24 @@ Kickstart is a method to automate the Linux installation without the need for an
 5. Start the Kickstart installation
    
 
+#### System Run Levels (0 through 6)
+
+A run level is a preset operating state on a Unix-like operating system.
+
+<p>A system can be booted into (i.e., started up into) any of several runlevels, each of which is
+represented by a single digit integer. Each runlevel designates a different system configuration
+and allows access to a different combination of processes (i.e., instances of executing programs).
+The are differences in the runlevels according to the operating system. Seven runlevels are
+supported in the standard Linux kernel (i.e., core of the operating system). They are:</p>
+
+* 0 - System halt; no activity, the system can be safely powered down.
+* 1 - Single user; rarely used.
+* 2 - Multiple users, no NFS (network filesystem); also used rarely.
+* 3 - Multiple users, command line (i.e., all-text mode) interface; the standard runlevel for most Linux-based server hardware.
+* 4 - User-definable
+* 5 - Multiple users, GUI (graphical user interface); the standard runlevel for most Linux-based desktop systems.
+* 6 - Reboot; used when restarting the system.
+
+To access the different run levels, you can use the command `init <run_level_integer>` for example; `init 6` will reboot the system.
+
+
