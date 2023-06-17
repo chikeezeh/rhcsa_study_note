@@ -127,3 +127,33 @@ scrape_configs:
 2. Restart the prometheus service, `systemctl restart prometheus`
 
 3. Verify that the connection has been established by going to the following address, `http://monitoring_ip:9090/targets`, you should see the client machine and the prometheus machine showing up.
+
+#### Install and configure Grafana on the monitoring server
+Final step would be to install and configure grafana so we can create a dashboard quickly for different metrics we are interested in.
+1. Create a grafana repo, `vim /etc/yum.repos.d/grafana.repo` and add the contents below.
+```vim
+[grafana]
+name=grafana
+baseurl=https://rpm.grafana.com
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+```
+2. Install grafana, `yum install grafana`
+3. Verify that grafana was installed `rpm -qi grafana`
+4. Start the grafana service
+
+```console
+systemctl start grafana-server
+systemctl status grafana-server
+systemctl enable grafana-server
+```
+5. Enable port 3000 through firewall `firewall-cmd --add-port=3000/tcp --permanent`
+6. Reload firewall, `firewall-cmd --reload`
+7. Go to `http:<ip>:3000` you should be welcomed with the grafana sign in page like below. The default username and passwd is admin admin, you will be prompted to change this password at first login.
+
+![grafana](../images/grafana.jpg)
+
