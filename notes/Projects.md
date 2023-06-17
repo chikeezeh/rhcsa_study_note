@@ -66,3 +66,45 @@ systemctl enable prometheus
 ```
 15. To access your prometheus web console, go to `http://<your_ip>:9090`, if all the configuration is done correctly, you should see an interface like the image below.
 ![prometheus](../images/prometheus.jpg)
+
+#### Steps for installing Node Exporter on the monitored server.
+To monitor a client server using prometheus, we will need to install and configure Node Exporter on the client server. The steps for doing that is outlined below.
+1. Navigate to the download [page](https://prometheus.io/download/) of prometheus, then look for the latest stable version of node exporter.
+2. Use wget to download the tar file, ` wget https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz`
+3. Create a node exporter user, `useradd -rs /bin/false nodeusr`
+4. Extract the downloaded node exporter tar file, `tar xvzf node_exporter-1.6.0.linux-amd64.tar.gz`
+5. Navigate into the folder created from the step above, `cd node_exporter-1.6.0.linux-amd64`
+6. Move the node_exporter file to the binaries location, `mv node_exporter /usr/local/bin`
+7. Change the ownership of the binaries copied in the above step, `chown nodeusr:nodeusr /usr/local/bin/node_exporter`
+8. Create the systemd file for node_exporter, `vim /etc/systemd/system/node_exporter.service`, enter the following entries below
+```vim
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+[Service]
+User=nodeusr
+Group=nodeusr
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+[Install]
+WantedBy=multi-user.target
+```
+9. Start the node_exporter service;
+
+```console
+systemctl daemon-reload
+systemctl start node_exporter
+systemctl status node_exporter
+systemctl enable node_exporter
+```
+10. Enable node_exporter through firewall.
+
+```console
+firewall-cmd --add-port=9100/tcp --zone=public --permanent
+firewall-cmd --reload
+```
+11. Go to this endpoint `http://<your_ip>:9100/metrics` if everything is configured correctly you should see the image below showing some system parameters. The endpoint can then be configured in the prometheus server to pull data from the client server.
+
+![node_exporter](../images/node_exporter.jpg)
+
