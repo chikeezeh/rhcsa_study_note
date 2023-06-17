@@ -157,3 +157,7 @@ systemctl enable grafana-server
 
 ![grafana](../images/grafana.jpg)
 
+8. Once you are logged into grafana, look for data connections, search for prometheus, then add the prometheus end point (http://prometheus_ip:9090) to the Prometheus server url field.
+![grafana_connections](../images/grafana_connections.jpg)
+9. Next step is to create a dashboard with the new data connection, have fun experimenting!
+
