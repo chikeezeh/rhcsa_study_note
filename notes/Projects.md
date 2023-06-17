@@ -3,6 +3,7 @@
 - [Steps for installing Node Exporter on the monitored server.](#steps-for-installing-node-exporter-on-the-monitored-server)
 - [Steps for using the prometheus server to monitor the client server.](#steps-for-using-the-prometheus-server-to-monitor-the-client-server)
 - [Install and configure Grafana on the monitoring server](#install-and-configure-grafana-on-the-monitoring-server)
+- [Reverse proxy and https](#reverse-proxy-and-https)
 
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -166,3 +167,84 @@ systemctl enable grafana-server
 ![grafana_connections](../images/grafana_connections.jpg)
 9. Next step is to create a dashboard with the new data connection, have fun experimenting!
 
+#### Reverse proxy and https
+
+1. Install nginx web server, `yum install nginx -y`
+2. Start the web server, `systemctl start nginx`
+3. Enable the web server at startup `systemctl enable nginx`
+4. Enable http and https through firewall,`firewall-cmd --add-service={http,https} --permanent`
+5. Reload the firewall `firewall-cmd --reload`
+6. Make a directory to contain your grafana website config, `mkdir /etc/nginx/sites-enabled`
+7. Open the global nginx configuration `vim /etc/nginx/nginx.conf`
+8. Add this `include /etc/nginx/sites-enabled/*;` to the http section of the nginx.conf file, your http section of the configuration file should look like below:
+```console
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
+
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  _;
+        root         /usr/share/nginx/html;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+
+```
+9. Navigate to the folder we created earlier to contain grafana website configuration, `cd /etc/nginx/sites-enabled`
+10. The file format is the fully qualified domain name.conf, `vim FQDN.conf`
+11. Add the following content to the config file. We will create the self signed certificate in a separate step, however, if you change the name and location of your self signed certificate and key, change that in the config file.
+
+```console
+server {
+    listen 443 ssl;
+    server_name  <grafana_ip>;
+    ssl_certificate /etc/nginx/self-signed.crt;
+    ssl_certificate_key /etc/nginx/self-signed.key;
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_pass           http://<grafana_ip>:3000/;
+    }
+
+}
+server {
+    listen 80;
+    server_name <grafana_ip>;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+```
+12. Create ssl certificate and key using openssl, `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/self-signed.key -out /etc/nginx/self-signed.crt`
+13. `nginx -t` to test nginx configuration
+14. If no error, restart the nginx server,`systemctl restart nginx`
