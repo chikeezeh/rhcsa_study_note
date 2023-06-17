@@ -108,3 +108,22 @@ firewall-cmd --reload
 
 ![node_exporter](../images/node_exporter.jpg)
 
+#### Steps for using the prometheus server to monitor the client server.
+At this step, we should have a monitoring server with prometheus installed and configured. Also, we should have a client server with node exporter running. We can use the steps below to combine both machines, and monitor the client machine using the prometheus machine.
+1. Edit the prometheus config file and add the values for the client server, `vim /etc/prometheus/prometheus.yml`
+```vim
+global:
+  scrape_interval: 10s
+scrape_configs:
+  - job_name: 'prometheus_monitor'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'lab05-client'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['<ip_address_of_client>:9100']
+```
+2. Restart the prometheus service, `systemctl restart prometheus`
+
+3. Verify that the connection has been established by going to the following address, `http://monitoring_ip:9090/targets`, you should see the client machine and the prometheus machine showing up.
