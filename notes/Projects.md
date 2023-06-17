@@ -1,4 +1,9 @@
-### Using Prometheus and grafana to Monitor a Linux server.
+### Using Prometheus and grafana to Monitor a Linux server.<!-- omit from toc -->
+- [Steps for installing prometheus on the monitoring server.](#steps-for-installing-prometheus-on-the-monitoring-server)
+- [Steps for installing Node Exporter on the monitored server.](#steps-for-installing-node-exporter-on-the-monitored-server)
+- [Steps for using the prometheus server to monitor the client server.](#steps-for-using-the-prometheus-server-to-monitor-the-client-server)
+- [Install and configure Grafana on the monitoring server](#install-and-configure-grafana-on-the-monitoring-server)
+
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
 1. Server 1 with hostname `lab05-prometheus.cezeh.dev` will be used to monitor server 2 the client server `lab05-client.cezeh.dev`. Both Linux servers will be running AlmaLinux 9
