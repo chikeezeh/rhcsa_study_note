@@ -7,6 +7,7 @@
   - [Install and configure Grafana on the monitoring server](#install-and-configure-grafana-on-the-monitoring-server)
   - [Reverse proxy and https](#reverse-proxy-and-https)
 - [Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.](#using-nagios-core-nagios-plugins-and-nagios-remote-plugin-executor-nrpe-to-monitor-a-linux-server)
+  - [Installing Nagios Core from source on the monitoring server.](#installing-nagios-core-from-source-on-the-monitoring-server)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -255,4 +256,58 @@ server {
 ### Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.
 
 Two separate servers will be used for this project, one will be the Nagios host and the other will be a remote client that will be monitored by the Nagios host, both machines will be running AlmaLinux 9.
+
+#### Installing Nagios Core from source on the monitoring server.
+
+The Nagios [website](https://support.nagios.com/kb/article/nagios-core-installing-nagios-core-from-source-96.html#RHEL) has the steps for installing Nagios core on various Linux distributions, however we will need to make some modifications to be able to install it on AlmaLinux 9. The steps will be outlined below.
+
+1. Update your new Linux server using `dnf update -y` and set the hostname to a FQDN `hostnameclt set-hostname FQDN`
+2. Disable SELinux before proceeding (caution only do this on non-production server, or follow what your company policies are) `setenfore 0`, then edit the SELinux config file `vi /etc/selinux/config`, change `SELINUX=enforcing` to `SELINUX=permissive`.
+3. Install the pre-requisite packages, 
+   >`yum install -y gcc glibc glibc-common wget unzip httpd php gd gd-devel perl postfix`
+   `yum install openssl-devel`
+4. Navigate to `/tmp`, `cd /tmp`
+5. Download the latest version of Nagios core using wget; 
+   `wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.13.tar.gz`
+6. Extract the downloaded tar file.
+    `tar xvzf nagios-4.4.13.tar.gz`
+7. Navigate to the extracted folder `cd nagios-4.4.13`
+8. Compile the Nagios code
+   ```console
+   ./configure
+   make all
+   ```
+9. Create a `nagios` user and group, then modify the `apache` user to be added to the `nagios` group.
+    ```console
+    make install-group-users
+    usermod -a -G nagios apache
+    ```
+10. Install the binaries, CGIs, and HTML files `make install`
+11. Install and enable services
+    ```console
+      make install-daemoninit
+      systemctl enable httpd
+    ```
+12. Install command mode `make install-commandmode`
+13. Install configuration files `make install-config`
+14. Install Apache Config `make install-webconf`
+15. Configure firewall
+    ```console
+      firewall-cmd --zone=public --add-port=80/tcp --add-service={http,https} --permanent
+      firewall-cmd --reload
+    ```
+16. Create a `nagiosadmin` user that will be used to log into the web interface, once you run the command below, you will be asked to enter in a password, that password will be used to log into the webinterface so remember it.
+    `htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin`
+17. Start your `httpd` and `nagios` service.
+    ```console
+    systemctl start httpd
+    systemctl status httpd
+    systemctl start nagios.service
+    systemctl status nagios.service
+    ```
+18. If both services are running without any errors, navigate to the following url to access your Nagios web interface. `http://<nagios_server_ip>/nagios`, you will be greeted with a pop up to enter the username and password (nagiosadmin and the password we created earlier.)
+19. Once you log in successfully, you should see a page like the image below.
+![Nagios](../images/nagios.jpg)
+
+20. We only have the Nagios core engine currently installed, so we won't be able to talk to any hosts including the server running Nagios. To be able to communicate with servers, we need to install Nagios pluggins.
 
