@@ -338,7 +338,7 @@ The Nagios [website](https://support.nagios.com/kb/article/nagios-core-installin
 To monitor a Linux machine with the Nagios server we configured earlier, we will need to install `Nagios Plugins` on the remote machine and also install `NRPE`. The remote Linux machine (also called client machine) doesn't need the Nagios core installed.
 1. Install the pre-requisite packages
    ```console
-   yum install -y gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel make automake autoconf net-snmp-utils epel-release
+   yum install -y gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel make automake autoconf net-snmp-utils epel-release net-tools
    yum --enablerepo=epel install perl-Net-SNMP -y
    ```
 2. Create the user for Nagios, and set the password
@@ -363,5 +363,44 @@ To monitor a Linux machine with the Nagios server we configured earlier, we will
     ```console
     chown nagios.nagios /usr/local/nagios
     chown -R nagios.nagios /usr/local/nagios/libexec
+    ```
+
+#### Installing NRPE on the remote linux client.
+
+1. Download NRPE plugin
+    ```console
+    wget https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-4.0.2/nrpe-4.0.2.tar.gz
+    ```
+2. Extract the downloaded file `tar xzvf nrpe-4.0.2.tar.gz`
+3. Navigate to the extracted folder `cd nrpe-4.0.2`
+4. Compile and install NPRE
+    ```console
+    ./configure --disable-ssl
+    make all
+    make install-plugin
+    make install-daemon
+    make install-config
+    make install-init
+    ```
+5. Configure NRPE config file to add the Nagios server ip (note, this is the ip of the Linux server running Nagios core)
+    ` vim /usr/local/nagios/etc.nrpe.cfg `
+  Edit the part that says `allowed_hosts=127.0.0.1,::1` to `allowed_hosts=127.0.0.1,<ip_nagios_server>`, replace `<ip_nagios_server>` with actual IP of the machine running Nagios Core
+6. Start the nrpe service
+   ```console
+   systemctl start nrpe
+   systemctl status nrpe
+   systemctl enable nrpe
+   ``` 
+7. Enable nrpe port 5666 through firewall
+    ```console
+    firewall-cmd --zone=public --add-port=5666/tcp --permanent
+    firewall-cmd --reload
+    ```
+8. Verify that NRPE daemon is working correctly under systemd, you should get the output below when the netstat command is ran.
+    ```console
+    # netstat -at | grep nrpe
+      tcp        0      0 0.0.0.0:nrpe            0.0.0.0:*               LISTEN
+      tcp6       0      0 [::]:nrpe               [::]:*                  LISTEN
+
     ```
     
