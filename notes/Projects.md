@@ -1,10 +1,13 @@
-### Using Prometheus and grafana to Monitor a Linux server.<!-- omit from toc -->
-- [Steps for installing prometheus on the monitoring server.](#steps-for-installing-prometheus-on-the-monitoring-server)
-- [Steps for installing Node Exporter on the monitored server.](#steps-for-installing-node-exporter-on-the-monitored-server)
-- [Steps for using the prometheus server to monitor the client server.](#steps-for-using-the-prometheus-server-to-monitor-the-client-server)
-- [Install and configure Grafana on the monitoring server](#install-and-configure-grafana-on-the-monitoring-server)
-- [Reverse proxy and https](#reverse-proxy-and-https)
+## Several Linux projects <!-- omit from toc -->
 
+- [Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.](#using-prometheus-node-exporter-and-grafana-to-monitor-a-linux-server)
+  - [Steps for installing prometheus on the monitoring server.](#steps-for-installing-prometheus-on-the-monitoring-server)
+  - [Steps for installing Node Exporter on the monitored server.](#steps-for-installing-node-exporter-on-the-monitored-server)
+  - [Steps for using the prometheus server to monitor the client server.](#steps-for-using-the-prometheus-server-to-monitor-the-client-server)
+  - [Install and configure Grafana on the monitoring server](#install-and-configure-grafana-on-the-monitoring-server)
+  - [Reverse proxy and https](#reverse-proxy-and-https)
+- [Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.](#using-nagios-core-nagios-plugins-and-nagios-remote-plugin-executor-nrpe-to-monitor-a-linux-server)
+### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
 1. Server 1 with hostname `lab05-prometheus.cezeh.dev` will be used to monitor server 2 the client server `lab05-client.cezeh.dev`. Both Linux servers will be running AlmaLinux 9
@@ -248,3 +251,8 @@ server {
 12. Create ssl certificate and key using openssl, `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/self-signed.key -out /etc/nginx/self-signed.crt`
 13. `nginx -t` to test nginx configuration
 14. If no error, restart the nginx server,`systemctl restart nginx`
+
+### Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.
+
+Two separate servers will be used for this project, one will be the Nagios host and the other will be a remote client that will be monitored by the Nagios host, both machines will be running AlmaLinux 9.
+
