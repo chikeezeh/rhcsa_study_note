@@ -8,6 +8,7 @@
   - [Reverse proxy and https](#reverse-proxy-and-https)
 - [Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.](#using-nagios-core-nagios-plugins-and-nagios-remote-plugin-executor-nrpe-to-monitor-a-linux-server)
   - [Installing Nagios Core from source on the monitoring server.](#installing-nagios-core-from-source-on-the-monitoring-server)
+  - [Installing Nagios Plugin on the Nagios server.](#installing-nagios-plugin-on-the-nagios-server)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -310,4 +311,25 @@ The Nagios [website](https://support.nagios.com/kb/article/nagios-core-installin
 ![Nagios](../images/nagios.jpg)
 
 20. We only have the Nagios core engine currently installed, so we won't be able to talk to any hosts including the server running Nagios. To be able to communicate with servers, we need to install Nagios pluggins.
+
+#### Installing Nagios Plugin on the Nagios server.
+1. Install the pre-requisite packages.
+    ```console
+    dnf install -y gcc glibc glibc-common openssl-devel perl wget gettext make net-snmp net-snmp-utils automake autoconf epel-release libpqxx-devel
+    yum --enablerepo=epel install perl-Net-SNMP
+    ```
+2. Navigate into the /tmp directory `cd /tmp`
+3. Use `wget` to download the source code for Nagios plugin, as at this writing the`2.4.4` version of the Nagios plugin throws an error of `ERROR: Could not determine OS. Please make sure lsb_release is installed`. We will use version `2.3.3` for this installation;
+`wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz`
+4. Extract the downloaded file; `tar zxf nagios-plugins.tar.gz`
+5. Navigate to the extracted folder `cd /tmp/nagios-plugins-release-2.3.3`
+6. Compile and Install the Nagios plugin
+   ```console
+   ./tools/setup
+   ./configure
+   make
+   make install
+   ```
+7. Restart Nagios `systemctl restart nagios`
+8. Test your Nagios by going to the web interface `http://<nagios_ip>/nagios`
 
