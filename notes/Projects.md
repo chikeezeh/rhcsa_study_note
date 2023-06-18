@@ -9,6 +9,7 @@
 - [Using Nagios core, Nagios Plugins, and Nagios Remote Plugin Executor (NRPE) to monitor a Linux server.](#using-nagios-core-nagios-plugins-and-nagios-remote-plugin-executor-nrpe-to-monitor-a-linux-server)
   - [Installing Nagios Core from source on the monitoring server.](#installing-nagios-core-from-source-on-the-monitoring-server)
   - [Installing Nagios Plugin on the Nagios server.](#installing-nagios-plugin-on-the-nagios-server)
+  - [Installing Nagios Plugins and NRPE On Remote Linux Host](#installing-nagios-plugins-and-nrpe-on-remote-linux-host)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -333,3 +334,34 @@ The Nagios [website](https://support.nagios.com/kb/article/nagios-core-installin
 7. Restart Nagios `systemctl restart nagios`
 8. Test your Nagios by going to the web interface `http://<nagios_ip>/nagios`
 
+#### Installing Nagios Plugins and NRPE On Remote Linux Host
+To monitor a Linux machine with the Nagios server we configured earlier, we will need to install `Nagios Plugins` on the remote machine and also install `NRPE`. The remote Linux machine (also called client machine) doesn't need the Nagios core installed.
+1. Install the pre-requisite packages
+   ```console
+   yum install -y gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel make automake autoconf net-snmp-utils epel-release
+   yum --enablerepo=epel install perl-Net-SNMP -y
+   ```
+2. Create the user for Nagios, and set the password
+   ```console
+   useradd nagios
+   passwd nagios
+   ```
+3. Download Nagios plugin
+    ```console
+    wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz
+    ```
+4. Extract the downloaded file `tar xzvf nagios-plugins.tar.gz`
+5. Navigate to the extracted directory `cd nagios-plugins-release-2.3.3`
+6. Compile and install the Nagios plugin
+    ```console
+   ./tools/setup
+   ./configure
+   make
+   make install
+   ```
+7. Change the ownership of the plugins directory to the Nagios user.
+    ```console
+    chown nagios.nagios /usr/local/nagios
+    chown -R nagios.nagios /usr/local/nagios/libexec
+    ```
+    
