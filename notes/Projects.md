@@ -11,6 +11,7 @@
   - [Installing Nagios Plugin on the Nagios server.](#installing-nagios-plugin-on-the-nagios-server)
   - [Installing Nagios Plugins and NRPE On Remote Linux Host](#installing-nagios-plugins-and-nrpe-on-remote-linux-host)
   - [Install NRPE on Nagios Monitoring server.](#install-nrpe-on-nagios-monitoring-server)
+  - [Configuring the Nagios monitoring server to monitor the remote Linux machines.](#configuring-the-nagios-monitoring-server-to-monitor-the-remote-linux-machines)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -412,3 +413,105 @@ The final stage of this project is to go back to our Nagios monitoring server, w
     `/usr/local/nagios/libexec/check_nrpe -H <remote_linux_ip_address>`
     You should get the following string `NRPE v4.0.2` if both servers can communicate
 
+#### Configuring the Nagios monitoring server to monitor the remote Linux machines.
+1. Create `hosts` and `services` config files.
+   ```console
+   cd /usr/local/nagios/etc/
+   touch hosts.cfg
+   touch services.cfg
+   ```
+2. Let the overall nagios config file know about the two files created above. `vim /usr/local/nagios/etc/nagios.cfg` add the lines below into the file, this will go under the other cfg_file variables.
+   ```vim
+    cfg_file=/usr/local/nagios/etc/hosts.cfg
+    cfg_file=/usr/local/nagios/etc/services.cfg
+
+   ```
+3. Edit the hosts config file `vim /usr/local/nagios/etc/hosts.cfg`
+   Add the following content, change your hostname to your actual hostame and ip to the ip of the remote linux client.
+```vim
+## Default Linux Host Template ##
+define host{
+name                            linux-box               ; Name of this template
+use                             generic-host            ; Inherit default values
+check_period                    24x7
+check_interval                  5
+retry_interval                  1
+max_check_attempts              10
+check_command                   check-host-alive
+notification_period             24x7
+notification_interval           30
+notification_options            d,r
+contact_groups                  admins
+register                        0                       ; DONT REGISTER THIS - ITS A TEMPLATE
+}
+
+## Default
+define host{
+use                             linux-box               ; Inherit default values from a template
+host_name                       <hostname of remote client> ; The name we're giving to this server
+alias                           AlmaLinux 9                ; A longer name for the server
+address                         <add_ip_remote_client>            ; IP address of Remote Linux host
+}
+```
+4. Edit the service config file `vim /usr/local/nagios/etc/services.cfg`
+```vim
+  define service{
+        use                     generic-service
+        host_name               <hostname of remote client>
+        service_description     CPU Load
+        check_command           check_nrpe!check_load
+        }
+
+  define service{
+        use                     generic-service
+        host_name               <hostname of remote client>
+        service_description     Total Processes
+        check_command           check_nrpe!check_total_procs
+        }
+
+  define service{
+        use                     generic-service
+        host_name               <hostname of remote client>
+        service_description     Current Users
+        check_command           check_nrpe!check_users
+        }
+
+  define service{
+        use                     generic-service
+        host_name               <hostname of remote client>
+        service_description     SSH Monitoring
+        check_command           check_nrpe!check_ssh
+        }
+
+  define service{
+        use                     generic-service
+        host_name               <hostname of remote client>
+        service_description     FTP Monitoring
+        check_command           check_nrpe!check_ftp
+        }
+
+```
+5. Configure the NRPE command `vim /usr/local/nagios/etc/objects/commands.cfg`. Add the content below to the end of the file.
+    ``` vim
+    ###############################################################################
+    # NRPE CHECK COMMAND
+    #
+    # Command to use NRPE to check remote host systems
+    ###############################################################################
+
+    define command{
+        command_name check_nrpe
+        command_line $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+        }
+    ```
+6. Run configuration check to see if there are any errors;
+   `# /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg`
+   You should see the output below:
+   ```console
+      Total Warnings: 0
+      Total Errors:   0
+
+      Things look okay - No serious problems were detected during the pre-flight check
+   ```
+7. Restart your Nagios service, `systemctl restart nagios`
+8. Congratulations, you can now monitor the remote server when you go to your web interface `http://<nagios-server-ip>/nagios`
