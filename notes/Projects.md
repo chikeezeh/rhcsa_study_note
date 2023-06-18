@@ -10,6 +10,7 @@
   - [Installing Nagios Core from source on the monitoring server.](#installing-nagios-core-from-source-on-the-monitoring-server)
   - [Installing Nagios Plugin on the Nagios server.](#installing-nagios-plugin-on-the-nagios-server)
   - [Installing Nagios Plugins and NRPE On Remote Linux Host](#installing-nagios-plugins-and-nrpe-on-remote-linux-host)
+  - [Install NRPE on Nagios Monitoring server.](#install-nrpe-on-nagios-monitoring-server)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -403,4 +404,11 @@ To monitor a Linux machine with the Nagios server we configured earlier, we will
       tcp6       0      0 [::]:nrpe               [::]:*                  LISTEN
 
     ```
-    
+
+#### Install NRPE on Nagios Monitoring server.
+The final stage of this project is to go back to our Nagios monitoring server, where we have Nagios core installed, then install NRPE and configure it.
+1. Follow the steps 1 to 4 outlined in [installing NRPE plugin on remote linux server.](#markdown-installing-NRPE-on-the-remote-linux-client.)
+2. Test that your Nagios server can talk with the remote linux machine using the command below, replace `<remote_ip>` with the ip of your remote linux client.
+    `/usr/local/nagios/libexec/check_nrpe -H <remote_linux_ip_address>`
+    You should get the following string `NRPE v4.0.2` if both servers can communicate
+
