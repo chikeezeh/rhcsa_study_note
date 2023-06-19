@@ -230,7 +230,7 @@ http {
 ```
 9. Navigate to the folder we created earlier to contain grafana website configuration, `cd /etc/nginx/sites-enabled`
 10. The file format is the fully qualified domain name.conf, `vim FQDN.conf`
-11. Add the following content to the config file. We will create the self signed certificate in a separate step, however, if you change the name and location of your self signed certificate and key, change that in the config file.
+11. Add the following content to the config file. We will create the self signed certificate in a separate step, however, if you change the name and location of your self signed certificate and key, change that in the config file. <span style="color:red">Replace <grafana_ip> with the IP address of your grafana server, for example; 10.24.25.1.</span>
 
 ```console
 server {
@@ -241,7 +241,7 @@ server {
 
     location / {
         proxy_set_header Host $http_host;
-        proxy_pass           http://<grafana_ip>:3000/;
+        proxy_pass http://<grafana_ip>:3000/;
     }
 
 }
