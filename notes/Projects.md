@@ -385,7 +385,7 @@ To monitor a Linux machine with the Nagios server we configured earlier, we will
     make install-init
     ```
 5. Configure NRPE config file to add the Nagios server ip (note, this is the ip of the Linux server running Nagios core)
-    ` vim /usr/local/nagios/etc.nrpe.cfg `
+    ` vim /usr/local/nagios/etc/nrpe.cfg `
   Edit the part that says `allowed_hosts=127.0.0.1,::1` to `allowed_hosts=127.0.0.1,<ip_nagios_server>`, replace `<ip_nagios_server>` with actual IP of the machine running Nagios Core
 6. Start the nrpe service
    ```console
