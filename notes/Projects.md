@@ -12,6 +12,8 @@
   - [Installing Nagios Plugins and NRPE On Remote Linux Host](#installing-nagios-plugins-and-nrpe-on-remote-linux-host)
   - [Install NRPE on Nagios Monitoring server.](#install-nrpe-on-nagios-monitoring-server)
   - [Configuring the Nagios monitoring server to monitor the remote Linux machines.](#configuring-the-nagios-monitoring-server-to-monitor-the-remote-linux-machines)
+- [Configuring a package repository on Linux server.](#configuring-a-package-repository-on-linux-server)
+  - [Initial Requirement.](#initial-requirement)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -515,3 +517,10 @@ address                         <add_ip_remote_client>            ; IP address o
    ```
 7. Restart your Nagios service, `systemctl restart nagios`
 8. Congratulations, you can now monitor the remote server when you go to your web interface `http://<nagios-server-ip>/nagios`
+
+### Configuring a package repository on Linux server.
+
+#### Initial Requirement.
+To configure a package repository on a Linux machine, the following information is require.
+1. The location of the packages, could be on another linux machine, in which case we will be given a file address on that machine. Also, the location could be hosted on another machine as a webserver, in that case we will get a web URL.
+2. The name of repository.
