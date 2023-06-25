@@ -14,6 +14,7 @@
   - [Configuring the Nagios monitoring server to monitor the remote Linux machines.](#configuring-the-nagios-monitoring-server-to-monitor-the-remote-linux-machines)
 - [Configuring a package repository on Linux server.](#configuring-a-package-repository-on-linux-server)
   - [Initial Requirement.](#initial-requirement)
+  - [Steps to take to configure the local repository](#steps-to-take-to-configure-the-local-repository)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -522,5 +523,65 @@ address                         <add_ip_remote_client>            ; IP address o
 
 #### Initial Requirement.
 To configure a package repository on a Linux machine, the following information is require.
-1. The location of the packages, could be on another linux machine, in which case we will be given a file address on that machine. Also, the location could be hosted on another machine as a webserver, in that case we will get a web URL.
-2. The name of repository.
+1. The location of the packages, could be on another linux machine, in which case we will be given a file address on that machine. Also, the location could be hosted on another machine as a webserver, in that case we will get a web URL. For this we will use the url (http://example.com/test)
+2. The name of repository (test).
+
+#### Steps to take to configure the local repository
+
+1. Create a file in the `/etc/yum.repos.d` directory;
+  `touch /etc/yum.repos.d/local.repo`
+2. Edit the `/etc/yum.repos.d/local.repo` file using your favorite editor, and add the contents shown below;
+
+    ```vim
+    [test]
+    name=test
+    baseurl=http:example.com/test
+    gpgcheck=0
+    enabled=1
+    ```
+3. Verify that the new repo has been created by running `yum repolist all`. You should see the new repo among the other repos on the system. See example below:
+
+```console
+repo id                    repo name                                          status
+appstream                  AlmaLinux 9 - AppStream                            enabled
+appstream-debuginfo        AlmaLinux 9 - AppStream - Debug                    disabled
+appstream-source           AlmaLinux 9 - AppStream - Source                   disabled
+baseos                     AlmaLinux 9 - BaseOS                               enabled
+baseos-debuginfo           AlmaLinux 9 - BaseOS - Debug                       disabled
+baseos-source              AlmaLinux 9 - BaseOS - Source                      disabled
+crb                        AlmaLinux 9 - CRB                                  disabled
+crb-debuginfo              AlmaLinux 9 - CRB - Debug                          disabled
+crb-source                 AlmaLinux 9 - CRB - Source                         disabled
+epel                       Extra Packages for Enterprise Linux 9 - x86_64     enabled
+epel-debuginfo             Extra Packages for Enterprise Linux 9 - x86_64 - D disabled
+epel-source                Extra Packages for Enterprise Linux 9 - x86_64 - S disabled
+epel-testing               Extra Packages for Enterprise Linux 9 - Testing -  disabled
+epel-testing-debuginfo     Extra Packages for Enterprise Linux 9 - Testing -  disabled
+epel-testing-source        Extra Packages for Enterprise Linux 9 - Testing -  disabled
+extras                     AlmaLinux 9 - Extras                               enabled
+extras-debuginfo           AlmaLinux 9 - Extras - Debug                       disabled
+extras-source              AlmaLinux 9 - Extras - Source                      disabled
+highavailability           AlmaLinux 9 - HighAvailability                     disabled
+highavailability-debuginfo AlmaLinux 9 - HighAvailability - Debug             disabled
+highavailability-source    AlmaLinux 9 - HighAvailability - Source            disabled
+nfv                        AlmaLinux 9 - NFV                                  disabled
+nfv-debuginfo              AlmaLinux 9 - NFV - Debug                          disabled
+nfv-source                 AlmaLinux 9 - NFV - Source                         disabled
+plus                       AlmaLinux 9 - Plus                                 disabled
+plus-debuginfo             AlmaLinux 9 - Plus - Debug                         disabled
+plus-source                AlmaLinux 9 - Plus - Source                        disabled
+resilientstorage           AlmaLinux 9 - ResilientStorage                     disabled
+resilientstorage-debuginfo AlmaLinux 9 - ResilientStorage - Debug             disabled
+resilientstorage-source    AlmaLinux 9 - ResilientStorage - Source            disabled
+rt                         AlmaLinux 9 - RT                                   disabled
+rt-debuginfo               AlmaLinux 9 - RT - Debug                           disabled
+rt-source                  AlmaLinux 9 - RT - Source                          disabled
+sap                        AlmaLinux 9 - SAP                                  disabled
+sap-debuginfo              AlmaLinux 9 - SAP - Debug                          disabled
+sap-source                 AlmaLinux 9 - SAP - Source                         disabled
+saphana                    AlmaLinux 9 - SAPHANA                              disabled
+saphana-debuginfo          AlmaLinux 9 - SAPHANA - Debug                      disabled
+saphana-source             AlmaLinux 9 - SAPHANA - Source                     disabled
+test                       test                                               enabled
+
+```
