@@ -15,6 +15,8 @@
 - [Configuring a package repository on Linux server.](#configuring-a-package-repository-on-linux-server)
   - [Initial Requirement.](#initial-requirement)
   - [Steps to take to configure the local repository](#steps-to-take-to-configure-the-local-repository)
+- [Sample Bash script for system administration.](#sample-bash-script-for-system-administration)
+  - [Bash script to check if user is locked and unlock the user.](#bash-script-to-check-if-user-is-locked-and-unlock-the-user)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -583,5 +585,71 @@ saphana                    AlmaLinux 9 - SAPHANA                              di
 saphana-debuginfo          AlmaLinux 9 - SAPHANA - Debug                      disabled
 saphana-source             AlmaLinux 9 - SAPHANA - Source                     disabled
 test                       test                                               enabled
+
+```
+
+### Sample Bash script for system administration.
+
+#### Bash script to check if user is locked and unlock the user.
+This script intends to answer the following questions.
+1. Create a script that will check if a user account is locked
+2. Print the account username is locked.
+3. Use any Linux command to unlock the user account
+4. print user account has been successfully unlocked
+5. Put logs of the activity into /var/log/unlock.log
+
+```sh
+#!/bin/bash
+
+# script requires root privilege, check if the user has sudo access
+if [ $UID -ne 0 ];
+then
+    echo "You need root access to run this script"
+    exit
+fi
+
+# check if log file exist, if it doesn't create it
+
+logfile="/var/log/unlock.log"
+username=$1 #capture the 1st argument passed to the script
+
+if [ -f $logfile ];
+then
+    echo "The log file exists" | tee -a $logfile
+else
+    touch $logfile
+    echo "created log file: $logfile" | tee -a $logfile
+fi
+
+# check if the user enters a username
+if [ $# -ne 1 ];
+then
+    echo "The script requires a username, check below for how to execute the script" | tee -a $logfile
+    echo "Usage: $0 <username>" | tee -a $logfile
+    exit
+else
+    # check if the username is a valid user on the system
+    if id -u $username &>> $logfile;
+    then
+        echo "About to check if user $username is locked " | tee -a $logfile    
+    else
+        echo "The supplied username:$username doesn't exist on this machine...exiting" | tee -a $logfile
+        exit
+    fi
+fi
+
+# if a username is supplied and the user exist on the machine, we can check if the user is locked.
+userstatus=$(passwd -S $username | awk '{print $2}') #we are extracting the second field of the passwd -S <username> command.
+
+if [ $userstatus == LK ];
+then 
+    echo "User account:$username is locked out" | tee -a $logfile
+    echo "Unlocking user account:$username" | tee -a $logfile
+    usermod -U $username
+    echo "User account:$username unlocked" | tee -a $logfile
+else
+    echo "User account is not locked...exiting" | tee -a $logfile
+    exit
+fi
 
 ```
