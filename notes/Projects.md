@@ -17,6 +17,7 @@
   - [Steps to take to configure the local repository](#steps-to-take-to-configure-the-local-repository)
 - [Sample Bash script for system administration.](#sample-bash-script-for-system-administration)
   - [Bash script to check if user is locked and unlock the user.](#bash-script-to-check-if-user-is-locked-and-unlock-the-user)
+  - [Bash script to check if user is locked and unlock the user with the added capability of sending logs to a file.](#bash-script-to-check-if-user-is-locked-and-unlock-the-user-with-the-added-capability-of-sending-logs-to-a-file)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -652,4 +653,98 @@ else
     exit
 fi
 
+```
+#### Bash script to check if user is locked and unlock the user with the added capability of sending logs to a file.
+```sh
+#!/bin/bash
+
+# script requires root privilege, check if the user has sudo access
+if [ $UID -ne 0 ];
+then
+    echo "You need root access to run this script"
+    exit
+fi
+
+# a function that takes in either a string or a file, adds timestamp to the string 
+# or the firstline of the file, echos the output and sends to a logfile also.
+log_timestamp() {
+    local input=$1
+    local current_timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+    local log_line
+
+    if [[ -f "$input" ]]; then
+        # Argument is a file
+        local first_line
+        read -r first_line < "$input"
+        log_line="$current_timestamp: $first_line"
+    else
+        # Argument is a string
+        log_line="$current_timestamp: $input"
+    fi
+
+    echo "$log_line" | tee -a $logfile
+}
+
+# file to store each activity
+logfile="/var/log/unlock-reset.log"
+
+# check if log file is created
+if [ -f $logfile ];
+then
+    log_timestamp "The log file exists"
+else
+    touch $logfile
+    log_timestamp "created log file: $logfile"
+fi
+
+#Take in the username we want to check if it is locked
+read -p 'Please enter username: ' username
+log_timestamp "$username entered by $USER"
+
+# check if the username is a valid user on the system, send both stdout and stderror to tempfile 
+if id -u $username &>> ./tempfile;
+then
+    log_timestamp "$username found" 
+    log_timestamp "./tempfile"
+    rm -f ./tempfile
+else
+    log_timestamp "The supplied username:$username doesn't exist on this machine...exiting"
+    log_timestamp "./tempfile"
+    rm -f ./tempfile
+    exit
+fi
+
+# if the user exist on the machine, we can check if the user is locked.
+userstatus=$(passwd -S $username | awk '{print $2}') #we are extracting the second field of the passwd -S <username> command.
+
+if [ $userstatus == "LK" ];
+then 
+    log_timestamp "The account $username is locked"
+    prompt=true
+    while $prompt; do
+        read -p "Do you want to unlock account $username? yes/no " unlock_input
+        case $unlock_input in
+            yes|y|Y)
+                log_timestamp "Unlocking user account:$username"
+                usermod -U $username
+                userstatus_post=$(passwd -S $username | awk '{print $2}') #check if user is unlocked
+                if [ $userstatus_post != "LK" ];
+                then
+                    log_timestamp "the account is now unlocked and can successfully login"
+                fi
+                prompt=false
+                ;;
+            no|n|N)
+                log_timestamp "Mission aborted" 
+                prompt=false
+                ;;
+            *)
+                echo "Invalid response, please enter yes or no"
+                ;;
+        esac
+    done
+else
+    log_timestamp "User account is not locked...exiting"
+    exit
+fi
 ```
