@@ -18,6 +18,8 @@
 - [Sample Bash script for system administration.](#sample-bash-script-for-system-administration)
   - [Bash script to check if user is locked and unlock the user.](#bash-script-to-check-if-user-is-locked-and-unlock-the-user)
   - [Bash script to check if user is locked and unlock the user with the added capability of sending logs to a file.](#bash-script-to-check-if-user-is-locked-and-unlock-the-user-with-the-added-capability-of-sending-logs-to-a-file)
+  - [Bash Script to create usernames from a file containing first and last name](#bash-script-to-create-usernames-from-a-file-containing-first-and-last-name)
+    - [Script requirement.](#script-requirement)
 ### Using Prometheus, Node Exporter, and grafana to Monitor a Linux server.
 Two servers are needed for this project.
 #### Steps for installing prometheus on the monitoring server.
@@ -747,4 +749,93 @@ else
     log_timestamp "User account is not locked...exiting"
     exit
 fi
+```
+#### Bash Script to create usernames from a file containing first and last name
+##### Script requirement.
+1. Read a file containing first and last name per line, each line will get a username.
+2. The username will be the 1st character of the first name joined to the all the characters of the last name and all will be in lowercase. `example: Ade Bayo will resolve to abayo`
+3. The usernames must be unique, so when we have `Ade Bayo` and `Alex Bayo` which will both resolve to `abayo`, we will need to add a number suffix to the next occurence of `abayo` to give us `abayo1`.
+4. Following from requirement 3, when more than two usernames will resolve to the same username, we will need to keep increasing the number suffix. `abayo abayo1 abayo2...abayo<n>`.
+5. Each of the username should be saved to a new file.
+
+```sh
+#!/bin/bash
+#function to extract the digits at the end of usernames
+# when we determine the last digits we can increment it by one for a user with same username
+# extract_last_digits "testuser123" will return 123
+# extract_last_digits "testuser" will return 0
+function extract_last_digits(){
+    local digits=$(echo "$1" | grep -Eo '[0-9]+$')
+    if [ -z $digits ]; #check if the result is empty meaning we don't have digits
+    then
+        digits=0
+    fi
+    echo "$digits"
+}
+
+# a function that for each username gets the maximum number,
+# for example if you have a username testuser, and you already have the following usernames
+# testuser
+# testuser1
+# testuser2
+# the function will return 3 (max_number=2 + 1) which will can then use to create testuser3
+
+function get_new_suffix (){
+    local file="$1" # we will be passing a file that contains the output of the grep command to this function
+    local max_number=0
+    local new_suffix=1
+
+    while IFS= read -r line
+    do
+        local num=$(extract_last_digits "$line")
+        if (( num > max_number));
+        then
+            max_number=$num
+        fi
+    done < "$file"
+    new_suffix=$((new_suffix + max_number))
+    echo "$new_suffix"
+}
+
+
+# Open the file for reading
+file="username.txt"
+userprofile="existinguser.txt" #contains existing users
+while IFS= read -r line
+do
+    # Get the number of names on each line
+    numname=$(echo $line | wc -w)
+    # check if less than 2 or more than 2
+    if [ $numname -ne 2 ];
+    then
+    echo "Needs firstname lastname"
+    continue # this won't be used.
+    fi
+    firstname="$(echo $line | cut -d ' ' -f 1)" #get the firstname
+    lastname=$(echo $line | cut -d ' ' -f 2) #get the lastname
+    firstname_character="${firstname:0:1}" #extract the first character of firstname
+    username="${firstname_character,,}${lastname,,}" #concat firstcharacter with lastname, all lowercase
+    echo "checking $username existence"
+    # check if the username / derivative of the username exists in our list of usernames
+    # the output of the grep command will be redirected to a tmp file which we can read to get the maximum number suffix
+    grep -E "^${username}[0-9]*$" "$userprofile" > ./tmp
+
+    # check if the tmp file is not empty
+    if [ -s "./tmp" ];
+    then
+    echo "$username exist"
+    cat ./tmp
+    new_username_suffix=$(get_new_suffix ./tmp)
+    username="$username$new_username_suffix" #update username with the new num suffix
+    echo "Created a unique username: $username"
+    echo $username >> $userprofile
+    rm -f ./tmp
+    else
+    echo "Adding $username to the list of approved usernames"
+    echo $username >> $userprofile
+    rm -f ./tmp
+    fi
+
+done < "$file"
+
 ```
