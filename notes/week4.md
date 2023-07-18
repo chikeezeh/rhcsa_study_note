@@ -28,7 +28,7 @@ For this project we will be using Almalinux 9 running on a vmware workstation.
 * Start the mysqld service
     `sudo systemctl start mysqld`
 * Enable the mysqld service
-    `sudo systemctl start mysqld`
+    `sudo systemctl enable mysqld`
 * Configure mysqld through firewall
     `sudo firewall-cmd --permanent --add-service=mysql --zone=public`
     `sudo firewall-cmd --reload`
