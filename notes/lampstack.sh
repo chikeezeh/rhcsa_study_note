@@ -4,13 +4,41 @@
 # distributions of Linux.
 # Author: Chike Ezeh 
 
-
 # The tasks in this script requires sudo privilege
 if [ $UID -ne 0 ];
 then
     echo "Please run this script as root user, or use the sudo $0 command"
     exit
 fi
+# function to clean up the installation if exit signal is received before the script
+# is done executing
+function rollback () {
+    echo "Exit signal received performing clean up process"
+    # stop all running service
+    systemctl stop httpd > /dev/null 2>&1
+    systemctl stop mysqld > /dev/null 2>&1
+    # remove http(s),mysql and port (80 and 443) service from firewall
+    firewall-cmd --permanent --remove-service={http,https,mysql} > /dev/null 2>&1
+    firewall-cmd --permanent --remove-port=80/tcp > /dev/null 2>&1
+    firewall-cmd --permanent --remove-port=443/tcp > /dev/null 2>&1
+    firewall-cmd --reload > /dev/null 2>&1
+    # delete any downloads
+    rm -rf ./projects
+    # delete all packages installed
+    yum remove wget unzip -y > /dev/null 2>&1
+    yum remove httpd -y > /dev/null 2>&1
+    yum remove php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip -y > /dev/null 2>&1
+    yum remove mysql mysql-server -y > /dev/null 2>&1 
+    yum remove mod_ssl openssh -y > /dev/null 2>&1
+    # delete all configuration file and installation files
+    rm -rf /var/www/html/* > /dev/null 2>&1
+    rm -rf /var/lib/mysql* > /dev/null 2>&1
+    rm -rf /etc/httpd/* > /dev/null 2>&1
+    echo "Clean up completed"
+    exit
+}
+
+trap rollback SIGINT SIGTERM SIGHUP SIGQUIT
 
 # a function to check if a service is enabled through firewall, if it is not, then enable it.
 function enablefirewall (){
@@ -108,7 +136,7 @@ if mysql -u root -p$password -e 'quit'> /dev/null 2>&1; #check if we can log int
 then
 echo
 read -p "Please enter the user for the wordpress database " dbuser
-read -s -p "Please enter the password you wan to use for the $dbuser " dbpasswd
+read -s -p "Please enter the password you want to use for the $dbuser " dbpasswd
 echo
 read -p "Please enter the database name " dbname
 echo "Configuring database for Wordpress"
@@ -192,6 +220,7 @@ wp_url="https://$ipaddr"
 read -p "Please enter the Website Title: " wp_title
 read -p "Please enter the Admin username: " wp_admin_user
 read -s -p "Please enter the password you want to use: " wp_admin_password
+echo
 read -p "Please enter the admin email: " wp_admin_email
 cd /var/www/html || exit
 wp core install --url="$wp_url" --title="$wp_title" --admin_user="$wp_admin_user" --admin_password="$wp_admin_password" --admin_email="$wp_admin_email" > /dev/null 2>&1
@@ -201,4 +230,3 @@ echo "Your Wordpress website is ready to use, go to https://$ipaddr"
 ########################
 # Future version of script
 # 1. Do input validation, make sure the user is entering the right information to stdin
-# 2. Create a trap that uninstalls wordpress, apache, and mysql when interupt signal is recieved
