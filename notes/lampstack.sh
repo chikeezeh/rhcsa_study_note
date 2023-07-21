@@ -90,6 +90,7 @@ then
     echo "Wordpress successfully downloaded"
 else
     echo "Wordpress wasn't downloaded, please check the url"
+    exit
 fi
 echo "Unzipping the downloaded wordpress to /var/www/html"
 sleep 5
