@@ -29,7 +29,7 @@ function rollback () {
     yum remove httpd -y > /dev/null 2>&1
     yum remove php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip -y > /dev/null 2>&1
     yum remove mysql mysql-server -y > /dev/null 2>&1 
-    yum remove mod_ssl openssh -y > /dev/null 2>&1
+    yum remove mod_ssl -y > /dev/null 2>&1
     # delete all configuration file and installation files
     rm -rf /var/www/html/* > /dev/null 2>&1
     rm -rf /var/lib/mysql* > /dev/null 2>&1
@@ -166,7 +166,7 @@ sleep 5
 echo "Ports 80 and 443 opened"
 
 # Configuring apache to be served via https
-yum install mod_ssl openssh -y > /dev/null 2>&1 #install ssl module needed for self signed certificate
+yum install mod_ssl -y > /dev/null 2>&1 #install ssl module needed for self signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/apache.key -out /etc/pki/tls/certs/apache.crt #creating self signed certificate
 ipaddr=$(hostname -I) #get the IP addr
 
