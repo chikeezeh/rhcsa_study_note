@@ -18,9 +18,9 @@ function rollback () {
     systemctl stop httpd > /dev/null 2>&1
     systemctl stop mysqld > /dev/null 2>&1
     # remove http(s),mysql and port (80 and 443) service from firewall
-    firewall-cmd --permanent --remove-service={http,https,mysql} > /dev/null 2>&1
-    firewall-cmd --permanent --remove-port=80/tcp > /dev/null 2>&1
-    firewall-cmd --permanent --remove-port=443/tcp > /dev/null 2>&1
+    firewall-cmd --remove-service={http,https,mysql} > /dev/null 2>&1
+    firewall-cmd --remove-port=80/tcp > /dev/null 2>&1
+    firewall-cmd --remove-port=443/tcp > /dev/null 2>&1
     firewall-cmd --reload > /dev/null 2>&1
     # delete any downloads
     rm -rf ./projects
@@ -119,25 +119,37 @@ setsebool -P httpd_can_network_connect true # SELinux setting to allow our wordp
 startservice mysqld
 enablefirewall mysql
 
+echo "Securing the MySQL installation"
 # Secure the Mysql configuration
 # Check if the root password is not set then set it
 if mysql -u root -e 'quit' > /dev/null 2>&1;
 then
-read -s -p "Enter a new password for the root account " password
-mysql -u root <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY "$password";
-FLUSH PRIVILEGES;
-EOF
-else
-echo "Root password already set"
-read -s -p "Enter the root password for Mysql " password
+mysql_secure_installation
 fi
+echo "MySQL installation secured"
+# keep asking the user for the correct MySQL root password
+while true; do
+    read -s -p "Enter the root password for MySQL " password
+    echo
+    mysql -u root -p$password -e 'quit'> /dev/null 2>&1 #check if we can log into the mysql shell with the root password
+    if [ $? -eq 0 ];
+    then
+        echo "Correct root password entered"
+        break
+    else
+        echo "Incorrect root password entered, try again"
+    fi
+done
 
-if mysql -u root -p$password -e 'quit'> /dev/null 2>&1; #check if we can log into the mysql shell with the root password
-then
-echo
 read -p "Please enter the user for the wordpress database " dbuser
-read -s -p "Please enter the password you want to use for the $dbuser " dbpasswd
+while true; do
+    read -s -p "Please enter the password you want to use for the $dbuser " dbpasswd
+    echo
+    read -s -p "Please re-enter the password you want to use for the $dbuser " dbpasswd2
+    echo
+    [ "$dbpasswd" = "$dbpasswd2" ] && break
+    echo "Please try again"
+done
 echo
 read -p "Please enter the database name " dbname
 echo "Configuring database for Wordpress"
@@ -148,7 +160,6 @@ CREATE USER '$dbuser'@'localhost' IDENTIFIED BY "$dbpasswd";
 GRANT ALL on $dbname.* TO '$dbuser'@'localhost';
 EOF
 echo "Database configured, database name:$dbname, database user: $dbuser"
-fi
 ########################
 # Apache configuration #
 ########################
@@ -164,9 +175,10 @@ firewall-cmd --add-port=80/tcp --add-port=443/tcp --permanent > /dev/null 2>&1
 firewall-cmd --reload 
 sleep 5
 echo "Ports 80 and 443 opened"
-
+sleep 5
+echo "Creating self-signed certificate for https"
 # Configuring apache to be served via https
-yum install mod_ssl -y > /dev/null 2>&1 #install ssl module needed for self signed certificate
+yum install mod_ssl openssh -y > /dev/null 2>&1 #install ssl module needed for self signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/apache.key -out /etc/pki/tls/certs/apache.crt #creating self signed certificate
 ipaddr=$(hostname -I) #get the IP addr
 
@@ -187,7 +199,7 @@ cat <<EOF >> /etc/httpd/conf.d/wordpress.conf
     Redirect permanent / https://$ipaddr
 </VirtualHost>
 EOF
-
+echo "Self-signed certificate sucessfully created"
 # reload apache
 systemctl restart httpd
 
@@ -219,8 +231,17 @@ mv wp-cli.phar /usr/bin/wp
 # Get website and admin information
 wp_url="https://$ipaddr"
 read -p "Please enter the Website Title: " wp_title
-read -p "Please enter the Admin username: " wp_admin_user
-read -s -p "Please enter the password you want to use: " wp_admin_password
+read -p "Please enter the Wordpress admin username: " wp_admin_user
+stty -echo
+while true; do
+    read -s -p "Please enter the password you want to use for the Wordpress admin:$wp_admin_user: " wp_admin_password
+    echo
+    read -s -p "Please re-enter the password you want to use for the Wordpress admin:$wp_admin_user: " wp_admin_password2
+    echo
+    [ "$wp_admin_password" = "$wp_admin_password2" ] && break
+    echo "Please try again"
+done
+stty echo
 echo
 read -p "Please enter the admin email: " wp_admin_email
 cd /var/www/html || exit
@@ -228,6 +249,27 @@ wp core install --url="$wp_url" --title="$wp_title" --admin_user="$wp_admin_user
 echo "Your Wordpress website is ready to use, go to https://$ipaddr"
 
 
-########################
-# Future version of script
-# 1. Do input validation, make sure the user is entering the right information to stdin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
