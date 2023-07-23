@@ -50,7 +50,7 @@ cp -r console_libraries /etc/prometheus/ && chown -R prometheus:prometheus /etc/
 ```vim
 global:
   scrape_interval: 10s
-  scrape_configs:
+scrape_configs:
   - job_name: 'prometheus_monitor'
     scrape_interval: 5s
     static_configs:
