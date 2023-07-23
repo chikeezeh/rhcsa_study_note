@@ -185,7 +185,7 @@ ipaddr=$(hostname -I) #get the IP addr
 # create the Apache configuration file to use the ssl certificate created
 # and redirect http to https
 
-cat <<EOF >> /etc/httpd/conf.d/wordpress.conf
+cat <<EOF > /etc/httpd/conf.d/wordpress.conf
 <VirtualHost *:443>
     ServerName https://$ipaddr
     DocumentRoot /var/www/html
