@@ -6,7 +6,7 @@
 # first check if the user is root or running the script as sudo
 if [ $UID -ne 0 ];
 then
-echo "Please run this script as root  or use sudo $1"
+echo "Please run this script as root  or use sudo $0"
 fi
 
 ####################
