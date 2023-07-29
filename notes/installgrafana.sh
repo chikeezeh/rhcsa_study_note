@@ -250,19 +250,19 @@ else
     fi
 fi
 
-# # reset admin password
-# echo
-# while true; do
-#     read -s -p "Please enter the password you want to use for grafana admin: " new_password
-#     echo
-#     read -s -p "Please re-enter the password you want to use for grafana admin: " new_password2
-#     echo
-#     [ "$new_password" = "$new_password2" ] && break
-#     echo "Please try again"
-# done
+# reset admin password
+echo
+while true; do
+    read -s -p "Please enter the password you want to use for grafana admin: " new_password
+    echo
+    read -s -p "Please re-enter the password you want to use for grafana admin: " new_password2
+    echo
+    [ "$new_password" = "$new_password2" ] && break
+    echo "Please try again"
+done
 
-# # Use Grafana CLI to reset the admin password
-# grafana-cli admin reset-admin-password "$new_password" > /dev/null 2>&1
+# Use Grafana CLI to reset the admin password
+grafana-cli admin reset-admin-password "$new_password" > /dev/null 2>&1
 
 #############################################
 # Install Nginx to act as a reverse proxy   #
@@ -394,8 +394,8 @@ setsebool -P httpd_can_network_connect on
 # Node exporter install and configuration #
 ###########################################
 
-read -p "Please enter the IP address you will like to monitor" remoteip
-read -p "Enter a unique name for your server" servername
+read -p "Please enter the IP address you will like to monitor: " remoteip
+read -p "Enter a unique name for your server: " servername
 #ssh into the remote server and execute the installnode script
 ssh root@$remoteip 'bash -s' < ./installnode.sh
 
