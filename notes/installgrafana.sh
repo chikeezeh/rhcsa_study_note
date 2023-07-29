@@ -1,5 +1,7 @@
 #!/bin/bash
 # This script will be used to automate the installation of Prometheus and Grafana on a RHEL based system
+# This script will also install Node Exporter to a server we specify and add it to the Prometheus configuration 
+# so that it can be monitored.
 # This script won't work on other distributions of Linux
 # Author: Chike Ezeh (ezeh.chike@gmail.com)
 
