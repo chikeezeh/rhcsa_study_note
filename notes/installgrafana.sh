@@ -397,7 +397,7 @@ setsebool -P httpd_can_network_connect on
 read -p "Please enter the IP address you will like to monitor" remoteip
 read -p "Enter a unique name for your server" servername
 #ssh into the remote server and execute the installnode script
-ssh root@$remoteip 'bash -s' < ./installnode
+ssh root@$remoteip 'bash -s' < ./installnode.sh
 
 # edit the prometheus config file to add the new server to be monitored
 
