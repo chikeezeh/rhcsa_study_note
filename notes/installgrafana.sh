@@ -327,7 +327,7 @@ if grep '/etc/nginx/sites-enabled/' /etc/nginx/nginx.conf > /dev/null 2>&1;
 then
 echo "/etc/nginx/nginx.conf edited"
 else
-sed -i '\t/include \/etc\/nginx\/conf.d\/\*.conf;/a\include \/etc\/nginx\/sites-enabled\/\*;' /etc/nginx/nginx.conf
+sed -i '/include \/etc\/nginx\/conf.d\/\*.conf;/a\include \/etc\/nginx\/sites-enabled\/\*;' /etc/nginx/nginx.conf
 fi
 
 # create grafana website configuration
