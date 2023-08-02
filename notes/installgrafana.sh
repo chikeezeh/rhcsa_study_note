@@ -1,14 +1,13 @@
 #!/bin/bash
-# This script will be used to automate the installation of Prometheus and Grafana on a RHEL based system
-# This script will also install Node Exporter to a server we specify and add it to the Prometheus configuration 
-# so that it can be monitored.
+# This script will be used to automate the installation of grafana on a RHEL based system
+# This script also reads in a file containing IP addresses and unique
 # This script won't work on other distributions of Linux
 # Author: Chike Ezeh (ezeh.chike@gmail.com)
 
 # first check if the user is root or running the script as sudo
 if [ $UID -ne 0 ];
 then
-echo "Please run this script as root  or use sudo $0"
+echo "Please run this script as root  or use sudo $1"
 fi
 
 ####################
@@ -32,8 +31,8 @@ function createdir(){
 # Dependencies and Pre-flight check #
 #####################################
 echo "Installing required packages"
-yum update -y
-yum install wget openssl -y
+yum update -y > /dev/null 2>&1
+yum install wget openssl expect -y > /dev/null 2>&1
 ###########################
 # Downloading Prometheus  #
 ###########################
@@ -71,7 +70,7 @@ fi
 
 # create a user for the prometheus package
 echo
-read -p "Please enter the user you want to use for prometheus: " userprom
+userprom="prometheus"
 if id "$userprom" &>/dev/null; 
 then
     echo "User $userprom exists."
@@ -141,7 +140,7 @@ EOF
 fi
 
 
-chown prometheus:prometheus /etc/prometheus/prometheus.yml
+chown $userprom:$userprom $promconfig
 
 # prometheus systemd file
 systemdprom="/etc/systemd/system/prometheus.service"
@@ -394,25 +393,59 @@ setsebool -P httpd_can_network_connect on
 # Node exporter install and configuration #
 ###########################################
 
-read -p "Please enter the IP address you will like to monitor: " remoteip
-read -p "Enter a unique name for your server: " servername
-#ssh into the remote server and execute the installnode script
-ssh root@$remoteip 'bash -s' < ./installnode.sh
+read -p "Please enter file path with IP addresses and server names (IP and name per line separated by a space): " IP_FILE
+read -p "Enter Username: " USERNAME
+read -s -p "Enter admin password: " PASSWORD
+echo
+LOCAL_SCRIPT_PATH="./installnode.sh"
+# Remote directory to copy the script to
+REMOTE_DIR="/tmp"
 
-# edit the prometheus config file to add the new server to be monitored
-
-if grep $remoteip $promconfig;
-then
-echo "$remoteip already added to Prometheus config file"
+# loop through the IP_FILE
+while IFS= read -r line
+do
+read -r HOSTNAME SERVER_NAME <<<"$line"
+HOSTNAME=${HOSTNAME%[[:space:]]}
+if grep $HOSTNAME $promconfig > /dev/null 2>&1; #check if IP is already in the prometheus config file
+  then
+  echo "$HOSTNAME already configured"
 else
-echo "adding $remoteip to prometheus config file"
+  /usr/bin/expect <<EOF
+  set timeout -1
+  spawn scp $LOCAL_SCRIPT_PATH $USERNAME@$HOSTNAME:$REMOTE_DIR
+  expect {
+      "Are you sure you want to continue connecting (yes/no*)?" {
+          send "yes\r"
+          exp_continue
+      }
+      "*password:" {
+          send "$PASSWORD\r"
+      }
+  }
+  expect eof
+  spawn ssh $USERNAME@$HOSTNAME bash $REMOTE_DIR/$(basename $LOCAL_SCRIPT_PATH)
+  expect {
+      "*password:" {
+          send "$PASSWORD\r"
+      }
+  }
+  expect eof
+EOF
+# edit the prometheus config file to add the new server to be monitored
+if [ $? -eq 0 ]; 
+then
+echo "adding $HOSTNAME to prometheus config file"
 cat <<EOF >> $promconfig
-  - job_name: '$servername'
+  - job_name: '$SERVER_NAME'
     scrape_interval: 5s
     static_configs:
-      - targets: ['$remoteip:9100']
+      - targets: ['$HOSTNAME:9100']
 EOF
+else
+echo "$HOSTNAME not configured"
 fi
+fi
+done <"$IP_FILE"
 
 systemctl restart prometheus
 if systemctl is-active --quiet prometheus; then
