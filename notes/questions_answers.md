@@ -2,7 +2,7 @@
 
 1. Configure YUM repos with the given link ( 2 repos: 1st is BaseOS and 2nd is AppStream ) base_url= http://content.example.com/rhel8.0/x86_64/dvd/BaseOS AppStream_url= http://content.example.com/rhel8.0/x86_64/dvd/AppStream
 ```console
-#create a file in /etc/yum.repos.d directory that ends in .repo
+# create a file in /etc/yum.repos.d directory that ends in .repo
 touch example.repo
 vi example.repo
 # add the content below
@@ -73,4 +73,55 @@ drwxr-xr-x. 2 root manager 6 Oct  7 19:30 /home/manager
 [root@rhcsa manager]# touch anoter
 [root@rhcsa manager]# ll
 -rw-r--r--. 1 root manager 0 Oct  7 19:34 anoter
+```
+5. Copy the file /etc/fstab to /var/tmp/ and configure the "ACL" as mentioned below.
+><li>The file /var/tmp/fstab should be owned by the "root".
+><li>The file /var/tmp/fstab should belong to the group "root".
+><li>The file /var/tmp/fstab should not be executable by any one.
+><li>The user "sarah" should be able to read and write to the file.
+><li>The user "harry" can neither read nor write to the file.
+><li>Other users (future and current) should be able to read /var/tmp/fstab
+```console
+# answer
+[root@rhcsa tmp]# cp /etc/fstab /var/tmp/
+[root@rhcsa tmp]# ll /var/tmp/fstab 
+-rw-r--r--. 1 root root 653 Oct  8 08:19 /var/tmp/fstab
+[root@rhcsa tmp]# setfacl -m u:sarah:rw /var/tmp/fstab 
+[root@rhcsa tmp]# setfacl -m u:harry:--- /var/tmp/fstab 
+[root@rhcsa tmp]# getfacl /var/tmp/fstab
+getfacl: Removing leading '/' from absolute path names
+# file: var/tmp/fstab
+# owner: root
+# group: root
+user::rw-
+user:sarah:rw-
+user:harry:---
+group::r--
+mask::rw-
+other::r--
+
+[root@rhcsa tmp]# sudo -u harry cat /var/tmp/fstab
+cat: /var/tmp/fstab: Permission denied
+```
+As seen above user harry can't read the `/var/tmp/fstab` file.
+
+6. Configure a cron job that runs every 1 minutes and executes:
+logger "EX200 in progress" as the user sarah.
+```console
+crontab -u sarah -e
+# include the line below and save and quit the file.
+
+* * * * * logger "EX200 in progress"
+
+```
+7. Create the user "julie" with uid 4332.
+```console
+[root@rhcsa ~]# useradd -u 4332 julie
+[root@rhcsa ~]# id julie
+uid=4332(julie) gid=4332(julie) groups=4332(julie)
+```
+8. locate the files of owner "julie" and copy to the location /root/found directory
+
+```console
+find / -user julie -type f -exec cp {} /root/found \;
 ```
