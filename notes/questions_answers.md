@@ -125,3 +125,30 @@ uid=4332(julie) gid=4332(julie) groups=4332(julie)
 ```console
 find / -user julie -type f -exec cp {} /root/found \;
 ```
+9. Find the string "enter" from "/usr/share/dict/words" file and copy those lines in /root/strings file.
+```console
+[root@rhcsa ~]# cat /usr/share/dict/words 
+ this is enter 1 
+ this is enter 2 
+ this is none
+ this is another none none
+ this is enter 3                 
+[root@rhcsa ~]# cat /usr/share/dict/words | grep "enter" >> /root/strings
+[root@rhcsa ~]# cat /root/strings
+ this is enter 1 
+ this is enter 2 
+ this is enter 3
+```
+10. Synchronize time of your system with the server classroom.example.com
+
+```console
+# edit the /etc/chrony.conf file, and add the line server classroom.example.com iburst
+to the file, comment out any configured ntp
+```
+```vim
+# Use public servers from the pool.ntp.org project.
+# Please consider joining the pool (http://www.pool.ntp.org/join.html).
+# pool 2.rhel.pool.ntp.org iburst
+server classroom.example.com iburst
+
+```

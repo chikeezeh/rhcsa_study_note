@@ -15,7 +15,7 @@ Command &rarr; `ntpq`
 #### Chronyd
 This is a modern version of NTP that is also used for time synchronization.
 Package name &rarr; `chronyd`
-Configuration file &rarr; `/etc/chronyd.conf`
+Configuration file &rarr; `/etc/chrony.conf`
 Log file &rarr; `/var/log/chrony`
 Service &rarr; `systemctl start chronyd`
 Program commanc &rarr; `chronyc`
