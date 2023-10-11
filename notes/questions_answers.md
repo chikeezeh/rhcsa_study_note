@@ -152,3 +152,38 @@ to the file, comment out any configured ntp
 server classroom.example.com iburst
 
 ```
+11. Archive & compress for /etc directory under /var/tmp/archive.tar.bz2 format
+
+```console
+tar -cjf /var/tmp/archive.tar.bz2 /etc
+```
+12. Choose the recommended 'tuned' profile for your system and set it as the default.
+
+```console
+[root@rhcsa ~]# tuned-adm active
+Current active profile: balanced
+[root@rhcsa ~]# tuned-adm recommend
+virtual-guest
+[root@rhcsa ~]# tuned-adm profile virtual-guest
+[root@rhcsa ~]# tuned-adm active
+Current active profile: virtual-guest
+```
+13. Enable IP forwarding on your machine.
+
+> First step is to find the parameter for IP forwarding.
+> `sysctl -a | grep forward`
+> The parameter to change is `net.ipv4.ip_forward = 0`.
+> We have to append `net.ipv4.ip_forward=1` to the configuration file `/etc/sysctl.conf`. After that run the command `sysctl -p` to refresh the changes.
+
+
+14. On your server, the httpd service has been configured to use NFS but the configuration will not work because of the SELinux policy. Fix this situation by enabling the "httpd_use_nfs" boolean and make persistent across reboot.
+
+```console
+# check the current state of the boolean
+[root@rhcsa cezeh]# getsebool -a | grep httpd_use_nfs
+httpd_use_nfs --> off
+# set the boolean to on, then verify.
+[root@rhcsa cezeh]# setsebool -P httpd_use_nfs on
+[root@rhcsa cezeh]# getsebool -a | grep httpd_use_nfs
+httpd_use_nfs --> on
+```
