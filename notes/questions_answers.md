@@ -187,3 +187,101 @@ httpd_use_nfs --> off
 [root@rhcsa cezeh]# getsebool -a | grep httpd_use_nfs
 httpd_use_nfs --> on
 ```
+15. System1 should boot into the multi-user target by default and boot messages should be present
+(not silenced).
+```console
+# get the current target
+[root@rhcsa ~]# systemctl get-default
+graphical.target
+# set the default target
+[root@rhcsa ~]# systemctl set-default multi-user.target
+Removed /etc/systemd/system/default.target.
+Created symlink /etc/systemd/system/default.target → /usr/lib/systemd/system/multi-user.target.
+# to make boot messages present, edit the /etc/default/grub file
+# remove rhgb and quiet
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto resume=UUID=4da26f54-7150-4d18-b520-ef99cc1bd6db rhgb quiet"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+
+# the above becomes
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto resume=UUID=4da26f54-7150-4d18-b520-ef99cc1bd6db"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+
+# then run the command below to refresh grub
+grub2-mkconfig -o /boot/grub2/grub.cfg
+```
+
+16. Create a new logical volume according to the following requirements:
+The logical volume is named database and belongs to the datastore volume group and
+has a size of 50 extents. Logical volumes in the datastore volume group
+should have an extent size of 16 MB.
+Format the new logical volume with a ext4 filesystem.
+The logical volume should be automatically mounted under /mnt/database at system
+boot time.
+```console
+# create a partition using fdisk if no free partition exist
+[root@localhost ~]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.32.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table.
+Created a new DOS disklabel with disk identifier 0x815fac7b.
+
+Command (m for help): n
+Partition type
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-10485759, default 2048): 
+Last sector, +sectors or +size{K,M,G,T,P} (2048-10485759, default 10485759): +1G
+
+Created a new partition 1 of type 'Linux' and of size 1 GiB.
+# make the new partition an LVM
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'.
+
+# verify the partitions and type
+Command (m for help): p
+Disk /dev/sda: 5 GiB, 5368709120 bytes, 10485760 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x815fac7b
+
+# create a volume group with physical extent of 16M
+[root@localhost ~]# vgcreate datastore -s 16M /dev/sda1
+
+# create the logical volume with an extent size of 50
+[root@localhost ~]# lvcreate -n database -l 50 datastore
+
+# make the file system
+[root@localhost ~]# mkfs.ext4 /dev/datastore/database
+
+# make the mount point
+[root@localhost ~]# mkdir /mnt/database
+
+# add the mount point to /etc/fstab
+[root@localhost ~]# echo "/dev/datastore/database /mnt/database ext4 defaults 0 0" >> /etc/fstab
+
+[root@localhost ~]# findmnt --verify
+Success, no errors or warnings detected
+[root@localhost ~]# mount -a
+
+```
