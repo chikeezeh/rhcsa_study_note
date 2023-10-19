@@ -285,3 +285,185 @@ Success, no errors or warnings detected
 [root@localhost ~]# mount -a
 
 ```
+17. Create a 500M swap partition which take effect automatically at boot-start, and it should not
+affect the original swap partition
+```console
+# use fdisk to create a new partition of 500M, and change it to type swap.
+# use the mkswap command to turn the new partition to a swap filesystem
+# turn swap on
+# append to /etc/fstab to make it persistent after boot.
+
+[root@localhost ~]# fdisk /dev/sda
+
+Welcome to fdisk (util-linux 2.32.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+Partition type
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (2-4, default 2): 
+First sector (2099200-10485759, default 2099200): 
+Last sector, +sectors or +size{K,M,G,T,P} (2099200-10485759, default 10485759): +500M
+
+Created a new partition 2 of type 'Linux' and of size 500 MiB.
+
+Command (m for help): t
+Partition number (1,2, default 2): 
+Hex code (type L to list all codes): 82
+
+Changed type of partition 'Linux' to 'Linux swap / Solaris'.
+
+Command (m for help): w
+The partition table has been altered.
+Syncing disks.
+
+[root@localhost ~]# lsblk
+NAME                   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                      8:0    0    5G  0 disk 
+├─sda1                   8:1    0    1G  0 part 
+│ └─datastore-database 253:0    0  800M  0 lvm  /mnt/database
+└─sda2                   8:2    0  500M  0 part 
+sr0                     11:0    1 1024M  0 rom  
+nvme0n1                259:0    0   40G  0 disk 
+├─nvme0n1p1            259:1    0  300M  0 part /boot
+├─nvme0n1p2            259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3            259:3    0 35.8G  0 part /
+[root@localhost ~]# mkswap -L myswap /dev/sda2
+Setting up swapspace version 1, size = 500 MiB (524283904 bytes)
+LABEL=myswap, UUID=2c0f379a-b459-4008-8a24-04089cace7b3
+[root@localhost ~]# swapon /dev/sda2
+[root@localhost ~]# lsblk
+NAME                   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                      8:0    0    5G  0 disk 
+├─sda1                   8:1    0    1G  0 part 
+│ └─datastore-database 253:0    0  800M  0 lvm  /mnt/database
+└─sda2                   8:2    0  500M  0 part [SWAP]
+sr0                     11:0    1 1024M  0 rom  
+nvme0n1                259:0    0   40G  0 disk 
+├─nvme0n1p1            259:1    0  300M  0 part /boot
+├─nvme0n1p2            259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3            259:3    0 35.8G  0 part /
+[root@localhost ~]# echo "LABEL=myswap none swap defaults 0 0" >> /etc/fstab
+[root@localhost ~]# findmnt --verify
+none
+   [W] target specified more than once
+
+0 parse errors, 0 errors, 1 warning
+[root@localhost ~]# mount -a
+```
+18. Create a new VDO volume according to following requirements:
+- Create the VDO volume labvdo, with any available device or partition.
+- Set its logical size to 50 GB.
+- Mount the volume labvdo on /labvdovol with the XFS file system so that it persists across
+reboots.
+```console
+# add a 5G disk or use any available partition
+# check if vdo is installed, if not install it.
+# create the vdo, give it the name and size
+# create the filesystem
+# create the mount point.
+# register the mount point in /etc/fstab
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda           8:0    0    5G  0 disk 
+└─sda1        8:1    0    5G  0 part 
+sr0          11:0    1 1024M  0 rom  
+nvme0n1     259:0    0   40G  0 disk 
+├─nvme0n1p1 259:1    0  300M  0 part /boot
+├─nvme0n1p2 259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3 259:3    0 35.8G  0 part /
+[root@localhost ~]# vdo create --name=labvdo --device=/dev/sda1 --vdoLogicalSize=50G
+Creating VDO labvdo
+      The VDO volume can address 2 GB in 1 data slab.
+      It can grow to address at most 16 TB of physical storage in 8192 slabs.
+      If a larger maximum size might be needed, use bigger slabs.
+Starting VDO labvdo
+Starting compression on VDO labvdo
+VDO instance 0 volume is ready at /dev/mapper/labvdo
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda           8:0    0    5G  0 disk 
+└─sda1        8:1    0    5G  0 part 
+  └─labvdo  253:0    0   50G  0 vdo  
+sr0          11:0    1 1024M  0 rom  
+nvme0n1     259:0    0   40G  0 disk 
+├─nvme0n1p1 259:1    0  300M  0 part /boot
+├─nvme0n1p2 259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3 259:3    0 35.8G  0 part /
+[root@localhost ~]# mkfs.xfs -K /dev/mapper/labvdo
+meta-data=/dev/mapper/labvdo     isize=512    agcount=4, agsize=3276800 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=13107200, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=6400, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda           8:0    0    5G  0 disk 
+└─sda1        8:1    0    5G  0 part 
+  └─labvdo  253:0    0   50G  0 vdo  
+sr0          11:0    1 1024M  0 rom  
+nvme0n1     259:0    0   40G  0 disk 
+├─nvme0n1p1 259:1    0  300M  0 part /boot
+├─nvme0n1p2 259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3 259:3    0 35.8G  0 part /
+[root@localhost /]# mkdir /labvdovol
+[root@localhost /]# echo "/dev/mapper/labvdo /labvdovol xfs defaults,x-sysmted.requires=vdo.service 0 0" >> /etc/fstab
+
+```
+19. Given a logical volume of 190M, extend the logical volume and its filesystem to 290M.
+
+```console
+# verify that the volume group has enough space
+# extend the logical volume, use -r to extend the filesystem simultaneously
+# verify that the logical volume has been extended.
+[root@localhost ~]# vgs
+  VG #PV #LV #SN Attr   VSize   VFree  
+  vo   1   1   0 wz--n- 396.00m 204.00m
+[root@localhost ~]# lvextend -r -L +100M vo/lo
+  Size of logical volume vo/lo changed from 192.00 MiB (48 extents) to 292.00 MiB (73 extents).
+  Logical volume vo/lo successfully resized.
+meta-data=/dev/mapper/vo-lo      isize=512    agcount=4, agsize=12288 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=49152, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=1368, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 49152 to 74752
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda           8:0    0    5G  0 disk 
+└─sda1        8:1    0    5G  0 part 
+  └─labvdo  253:0    0   50G  0 vdo  /labvdovol
+sdb           8:16   0    1G  0 disk 
+└─sdb1        8:17   0  400M  0 part 
+  └─vo-lo   253:1    0  292M  0 lvm  /lo
+sr0          11:0    1 1024M  0 rom  
+nvme0n1     259:0    0   40G  0 disk 
+├─nvme0n1p1 259:1    0  300M  0 part /boot
+├─nvme0n1p2 259:2    0  3.9G  0 part [SWAP]
+└─nvme0n1p3 259:3    0 35.8G  0 part /
+[root@localhost ~]# df -h
+Filesystem          Size  Used Avail Use% Mounted on
+devtmpfs            1.8G     0  1.8G   0% /dev
+tmpfs               1.8G     0  1.8G   0% /dev/shm
+tmpfs               1.8G  9.9M  1.8G   1% /run
+tmpfs               1.8G     0  1.8G   0% /sys/fs/cgroup
+/dev/nvme0n1p3       36G  5.4G   31G  16% /
+/dev/nvme0n1p1      295M  199M   96M  68% /boot
+/dev/mapper/labvdo   50G  390M   50G   1% /labvdovol
+tmpfs               364M   24K  364M   1% /run/user/1000
+/dev/mapper/vo-lo   287M   13M  275M   5% /lo
+```
