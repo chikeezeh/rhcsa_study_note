@@ -105,7 +105,7 @@ nvme0n1       259:0    0   40G  0 disk
 14. Change the ownership of the web directory to apache to prevent any permission issues. `chown -R apache:apache /var/www/html/repo`
 15. Update the permissions of the web directory. `chmod -R 755 /var/www/html/repo`
 16. Make your VM have a static IP address, I used nmtui. Feel free to use whatever technique you are comfortable with. 
-Tip: use `ip a` to get your current dynamic ip, use `ip route show` to get your Gateway. I used `8.8.8.8` for the DNS servers.
+Tip: use `ip a` to get your current dynamic ip, use `ip route show` to get your Gateway. I used `8.8.8.8` for the DNS servers. Note, if you are doing this locally with VMs that don't need access to the internet, all you need to change is the `Addresses` value to give it a static IP.
 ![staticip](../images/staticip.jpg)
 17. Now we can start our webserver, `systemctl enable --now httpd`
 18. To use a hostname, edit `/etc/hosts` file and add your IP address.
