@@ -172,3 +172,5 @@ Tip: use `ip a` to get your current dynamic ip, use `ip route show` to get your 
     http://repo.lab.exam/repo/BaseOS
     http://repo.lab.exam/repo/AppStream
     ```
+23. Once you have tested you repo to be working accurately, you can delete the files in `/repo`
+    `rm -rf /repo`
